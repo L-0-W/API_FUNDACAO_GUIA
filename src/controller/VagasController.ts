@@ -61,15 +61,23 @@ export class VagasController {
     const responseBuilder = new ResponseBuilder<vagasAPIretorno>();
 
     try {
-      const { cargo, cidade, modalidade, tipo_vinculo, recentes } = req.query;
+      const { cargo, cidade, modalidade, tipo_vinculo, recentes, beneficios } =
+        req.query;
 
-      if (!cargo && !cidade && modalidade && tipo_vinculo && recentes) {
+      if (
+        !cargo &&
+        !cidade &&
+        modalidade &&
+        tipo_vinculo &&
+        recentes &&
+        beneficios
+      ) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
         responseBuilder.adicionarMensagem(
-          "Parametro: 'cargo', 'cidade', 'modalidade', 'tipo_vinculo', 'recentes' esta incorreto ou faltando!",
+          "Parametro: 'cargo', 'cidade', 'modalidade', 'tipo_vinculo', 'recentes' e 'beneficios' esta incorreto ou faltando!",
         );
 
         responseBuilder.construir(res);
@@ -141,11 +149,23 @@ export class VagasController {
         return;
       }
 
-      let filtros: filtrosVaga = {};
+      if (beneficios?.toString().trim().length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
 
+        responseBuilder.adicionarMensagem(
+          "Parametro: 'beneficios' precisa ter algum conteudo!",
+        );
+
+        responseBuilder.construir(res);
+        return;
+      }
+
+      let filtros: filtrosVaga = {};
       const recentes_numerico = Number(recentes);
 
-      if (!Number.isInteger(recentes_numerico)) {
+      if (recentes && !Number.isInteger(recentes_numerico)) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
@@ -168,6 +188,9 @@ export class VagasController {
         : undefined;
       recentes != undefined
         ? (filtros.recentes = recentes_numerico)
+        : undefined;
+      beneficios != undefined
+        ? (filtros.beneficios = beneficios.toString().toLowerCase())
         : undefined;
 
       await this.vagasBusiness.obterVagaPorFiltro(filtros, responseBuilder);

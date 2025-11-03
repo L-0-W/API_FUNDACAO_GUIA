@@ -38,7 +38,7 @@ export class VagasData {
             const filtro = e.split(":");
 
             if (filtro[0] === "cargo") {
-              builder.andWhereLike("cargo", filtro[1]);
+              builder.andWhereLike("cargo", `%${filtro[1]}%`);
             }
 
             if (filtro[0] === "cidade") {
@@ -51,6 +51,22 @@ export class VagasData {
 
             if (filtro[0] === "tipo_vinculo") {
               builder.andWhereLike("tipo_vinculo", filtro[1]);
+            }
+
+            if (filtro[0] === "recentes") {
+              builder.andWhere(function () {
+                this.where("data_publicacao", ">=", Number(filtro[1]));
+              });
+            }
+
+            if (filtro[0] === "beneficios") {
+              builder.andWhere(function () {
+                const beneficios = filtro[1]?.split(",");
+
+                beneficios?.forEach((bene) => {
+                  this.orWhereLike("beneficios", `%${bene}%`);
+                });
+              });
             }
           });
         });

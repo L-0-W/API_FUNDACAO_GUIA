@@ -87,7 +87,24 @@ export class VagasBusiness {
         }
       }
 
+      if (
+        filtros.beneficios &&
+        filtros.beneficios.toString().split(",").length === 0
+      ) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Em beneficio e preciso que tenha algum valor seguindo: beneficios='valor,valor,valor' ",
+        );
+        return;
+      }
+
       const recentesTimeStamp = criarDataNoPassado(filtros.recentes as number);
+
+      !isNaN(recentesTimeStamp)
+        ? (filtros.recentes = recentesTimeStamp)
+        : undefined;
 
       const filtros_array = Object.entries(filtros).map((e) => {
         return e[0] + ":" + e[1];
@@ -96,6 +113,8 @@ export class VagasBusiness {
       console.log(filtros_array);
 
       const vagas = await this.vagasData.buscarVagaPorFiltro(filtros_array);
+
+      console.log(vagas);
 
       if (!vagas || vagas.length === 0) {
         responseBuilder.adicionarCodigoStatus(
@@ -109,6 +128,9 @@ export class VagasBusiness {
 
         return;
       }
+
+      responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
+      responseBuilder.adicionarBody({ vagas: vagas });
 
       return;
     } catch (err: any) {
