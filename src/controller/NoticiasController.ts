@@ -11,7 +11,8 @@ export class NoticiaisController {
     const responseBuilder = new ResponseBuilder<noticiaAPIretorno>();
 
     try {
-      const { bloco, setor, exame } = req.query;
+      const { bloco, setor, exame, tags } = req.query;
+
       const recentes = Number(req.query.recentes);
 
       if (recentes && !Number.isInteger(recentes)) {
@@ -28,6 +29,15 @@ export class NoticiaisController {
         return;
       }
 
+      if ((tags && tags.toString().split(","), length === 0)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Ao filtrar por tags, e obrigatorio que coloque os valores nesse formato: tags=valor1,valor2",
+        );
+        responseBuilder.construir(res);
+      }
       const params: params_noticia = {};
 
       console.log(setor);
@@ -36,6 +46,7 @@ export class NoticiaisController {
       bloco ? (params.bloco = bloco as string) : undefined;
       setor ? (params.setor = setor as string) : undefined;
       exame ? (params.exame = exame as string) : undefined;
+      tags ? (params.tags = tags as string) : undefined;
 
       await this.noticiasBusiness.verificarBuscaNoticias(
         params,

@@ -58,7 +58,7 @@ export type params_noticia = {
   bloco?: string;
   setor?: string;
   exame?: string;
-  tags?: string[];
+  tags?: string[] | string;
 };
 
 export type exame = {
