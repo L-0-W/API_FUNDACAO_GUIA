@@ -58,4 +58,15 @@ export class VagasBusiness {
       throw new Error(err);
     }
   };
+
+  obterVagaPorFiltro = async (
+    cargo: string,
+    responseBuilder: ResponseBuilder<vagasAPIretorno>,
+  ) => {
+    try {
+      return;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
 }

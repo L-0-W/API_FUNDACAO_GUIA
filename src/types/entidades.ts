@@ -33,6 +33,15 @@ export type referencias = {
   setor: referencia;
 };
 
+export type filtrosVaga = {
+  beneficios: string[];
+  cidade: string;
+  cargo: string;
+  modalidade: string;
+  tipo_vinculo: string;
+  recentes: number;
+};
+
 export type evento = {
   id?: number;
   titulo?: string;

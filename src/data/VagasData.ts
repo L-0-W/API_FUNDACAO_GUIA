@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { vagasEmprego } from "../types/entidades";
+import { filtrosVaga, vagasEmprego } from "../types/entidades";
 
 export class VagasData {
   buscarTodasVagas = async (): Promise<vagasEmprego[]> => {
@@ -20,6 +20,15 @@ export class VagasData {
         .first();
 
       return vaga;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  buscarVagaPorFiltro = async (
+    filtros: filtrosVaga,
+  ): Promise<vagasEmprego[]> => {
+    try {
     } catch (err: any) {
       throw new Error(err);
     }
