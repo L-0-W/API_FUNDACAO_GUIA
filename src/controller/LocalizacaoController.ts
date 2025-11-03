@@ -5,37 +5,38 @@ import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
 
 export class LocalizacaoController {
   private localizacaoBusiness = new LocalizacaoBusiness();
-  private responseBuilder = new ResponseBuilder<localizacaoAPIretorno>();
 
   buscarLocalizacaoPorParametros = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<localizacaoAPIretorno>();
+
     try {
       const { exame } = req.query;
 
       if (!exame || exame.toString().trim().length === 0) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
-        this.responseBuilder.adicionarMensagem(
+        responseBuilder.adicionarMensagem(
           "Parametro 'exame' esta incorreto, não existe ou invalido!",
         );
-        this.responseBuilder.construir(res);
+        responseBuilder.construir(res);
         return;
       }
 
       await this.localizacaoBusiness.obterLocalizacaoPorParametros(
         exame.toString(),
-        this.responseBuilder,
+        responseBuilder,
       );
 
-      this.responseBuilder.construir(res);
+      responseBuilder.construir(res);
     } catch (err: any) {
-      this.responseBuilder.adicionarCodigoStatus(
-        this.responseBuilder.STATUS_CODE_SERVER_ERROR,
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
       );
 
-      this.responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      this.responseBuilder.construir(res);
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      responseBuilder.construir(res);
     }
   };
 }

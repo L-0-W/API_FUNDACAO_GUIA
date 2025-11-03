@@ -5,49 +5,46 @@ import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
 
 export class AdminController {
   private adminBusiness = new AdminBusiness();
-  private responseBuilder = new ResponseBuilder<localizacaoAPIretorno>();
 
   deletarExamePorId = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<localizacaoAPIretorno>();
+
     try {
       const id = Number(req.params.id);
       const jwt_auth = req.headers.authorization;
 
       if (isNaN(id) || !Number.isInteger(id)) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
-        this.responseBuilder.adicionarMensagem("Id esta incorreto..");
-        this.responseBuilder.construir(res);
+        responseBuilder.adicionarMensagem("Id esta incorreto..");
+        responseBuilder.construir(res);
 
         return;
       }
 
       if (!jwt_auth) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
-        this.responseBuilder.adicionarMensagem("Token necessario não existe");
-        this.responseBuilder.construir(res);
+        responseBuilder.adicionarMensagem("Token necessario não existe");
+        responseBuilder.construir(res);
 
         return;
       }
 
-      await this.adminBusiness.deletarExamePorId(
-        id,
-        jwt_auth,
-        this.responseBuilder,
-      );
+      await this.adminBusiness.deletarExamePorId(id, jwt_auth, responseBuilder);
 
-      this.responseBuilder.construir(res);
+      responseBuilder.construir(res);
     } catch (err: any) {
-      this.responseBuilder.adicionarCodigoStatus(
-        this.responseBuilder.STATUS_CODE_SERVER_ERROR,
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
       );
-      this.responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
 
-      this.responseBuilder.construir(res);
+      responseBuilder.construir(res);
     }
   };
 }

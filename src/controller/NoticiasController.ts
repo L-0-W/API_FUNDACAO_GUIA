@@ -6,23 +6,24 @@ import { params_noticia } from "../types/entidades";
 
 export class NoticiaisController {
   private noticiasBusiness = new NoticiaisBusiness();
-  private responseBuilder = new ResponseBuilder<noticiaAPIretorno>();
 
   buscarNoticias = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<noticiaAPIretorno>();
+
     try {
       const { bloco, setor, exame } = req.query;
       const recentes = Number(req.query.recentes);
 
       if (recentes && !Number.isInteger(recentes)) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
         );
 
-        this.responseBuilder.adicionarMensagem(
+        responseBuilder.adicionarMensagem(
           "Foi coloado um valor incorreto no parametro 'recentes'..",
         );
 
-        this.responseBuilder.construir(res);
+        responseBuilder.construir(res);
 
         return;
       }
@@ -38,18 +39,18 @@ export class NoticiaisController {
 
       await this.noticiasBusiness.verificarBuscaNoticias(
         params,
-        this.responseBuilder,
+        responseBuilder,
       );
 
-      this.responseBuilder.construir(res);
+      responseBuilder.construir(res);
       return;
     } catch (err: any) {
-      this.responseBuilder.adicionarCodigoStatus(
-        this.responseBuilder.STATUS_CODE_SERVER_ERROR,
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
       );
 
-      this.responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      this.responseBuilder.construir(res);
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      responseBuilder.construir(res);
     }
   };
 }
