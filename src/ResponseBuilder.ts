@@ -14,7 +14,7 @@ export class ResponseBuilder<T> {
   // para facilitar o uso consistente e legível.
   public readonly STATUS_CODE_OK: number = 200;
   public readonly STATUS_CODE_VAZIO: number = 404;
-  public readonly STATUS_CODE_BAD_REQUEST: number = 400;
+  public readonly STATUS_CODE_ERRO_USUARIO: number = 400;
   public readonly STATUS_CODE_SERVER_ERROR: number = 500;
   public readonly STATUS_CODE_NAO_AUTORIZADO: number = 401;
   public readonly STATUS_CODE_ERRO_SEMANTICO: number = 422;
@@ -47,7 +47,7 @@ export class ResponseBuilder<T> {
   // - Envia o objeto 'retorno' como JSON.
   // - O comentário indica uma tarefa pendente: calcular um campo 'total'
   //   com base no tamanho de um array (ex: contagem de itens), mas isso não está implementado.
-  public build(res: Response) {
+  public construir(res: Response) {
     // ver o tamanho da array de exames/noticias para preencher total.
     res.status(this.retorno.codigoStatus || 500).json(this.retorno);
   }
