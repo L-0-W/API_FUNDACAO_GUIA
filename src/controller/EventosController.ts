@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { EventosBusiness } from "../business/EventosBusiness";
-import { eventosAPIretorno } from "../types/tiposRetorno";
+import { eventosAPIretorno } from "../types/apiRetornoTipos";
 
 export class EventosController {
   private eventosBusiness = new EventosBusiness();

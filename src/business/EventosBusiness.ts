@@ -1,6 +1,6 @@
 import { EventosData } from "../data/EventosData";
 import { ResponseBuilder } from "../ResponseBuilder";
-import { eventosAPIretorno } from "../types/tiposRetorno";
+import { eventosAPIretorno } from "../types/apiRetornoTipos";
 
 export class EventosBusiness {
   private eventosData = new EventosData();

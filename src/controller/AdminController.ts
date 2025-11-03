@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { AdminBusiness } from "../business/AdminBusiness";
 import { ResponseBuilder } from "../ResponseBuilder";
-import { localizacaoAPIretorno } from "../types/tiposRetorno";
+import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
 
 export class AdminController {
   private adminBusiness = new AdminBusiness();

@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { admin } from "../types/tiposComuns";
+import { admin } from "../types/entidades";
 
 export class LoginData {
   procurarAdminPorNome = (email: string): Promise<admin[]> => {

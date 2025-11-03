@@ -1,10 +1,10 @@
 import { LoginData } from "../data/LoginData";
 import { ResponseBuilder } from "../ResponseBuilder";
-import { admin } from "../types/tiposComuns";
+import { admin } from "../types/entidades";
 
 import jwt from "jsonwebtoken";
 import argon2 from "argon2";
-import { localizacaoAPIretorno } from "../types/tiposRetorno";
+import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
 
 export class LoginBusiness {
   private loginData = new LoginData();

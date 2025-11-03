@@ -2,8 +2,8 @@ import { ResponseBuilder } from "../ResponseBuilder";
 import { NoticiaisData } from "../data/NoticiasData";
 import { LIMIT_WORKER_THREADS } from "sqlite3";
 
-import { noticia_DTO, params_noticia } from "../types/tiposComuns";
-import { noticiaAPIretorno } from "../types/tiposRetorno";
+import { noticia_DTO, params_noticia } from "../types/entidades";
+import { noticiaAPIretorno } from "../types/apiRetornoTipos";
 
 export class NoticiaisBusiness {
   private noticiasData = new NoticiaisData();

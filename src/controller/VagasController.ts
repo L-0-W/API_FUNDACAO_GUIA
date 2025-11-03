@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { VagasBusiness } from "../business/VagasBusiness";
-import { vagasAPIretorno } from "../types/tiposRetorno";
+import { vagasAPIretorno } from "../types/apiRetornoTipos";
 
 export class VagasController {
   private vagasBusiness = new VagasBusiness();

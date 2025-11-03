@@ -6,33 +6,33 @@ import {
   setor,
   vagasEmprego,
   bloco,
-} from "./tiposComuns";
+} from "./entidades";
 
-export interface localizacaoAPIretorno {
+export type localizacaoAPIretorno = {
   exames?: exame[];
   setor?: setor[];
   bloco?: bloco[];
   andar?: string;
   coordenada?: string;
   referencias?: referencias;
-}
+};
 
-export interface eventosAPIretorno {
+export type eventosAPIretorno = {
   eventos?: evento[];
-}
+};
 
-export interface noticiaAPIretorno {
+export type noticiaAPIretorno = {
   noticias?: noticia_DTO[];
-}
+};
 
-export interface vagasAPIretorno {
+export type vagasAPIretorno = {
   vagas?: vagasEmprego[];
-}
+};
 
-export interface apiRetorno<T> {
+export type apiRetorno<T> = {
   codigoStatus?: number;
   mensagem?: string;
   existe?: boolean;
   total?: number;
   body?: T;
-}
+};

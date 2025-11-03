@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { LoginBusiness } from "../business/LoginBusiness";
 import { ResponseBuilder } from "../ResponseBuilder";
-import { localizacaoAPIretorno } from "../types/tiposRetorno";
+import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
 
 export class LoginController {
   private loginBusiness = new LoginBusiness();

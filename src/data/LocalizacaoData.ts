@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { bloco, exame, setor } from "../types/tiposComuns";
+import { bloco, exame, setor } from "../types/entidades";
 
 export class LocalizacaoData {
   buscarExames = async (exame: string): Promise<exame> => {

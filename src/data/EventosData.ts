@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { evento } from "../types/tiposComuns";
+import { evento } from "../types/entidades";
 
 export class EventosData {
   buscarTodosEventos = (): Promise<evento[]> => {

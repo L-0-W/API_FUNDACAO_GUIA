@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { LocalizacaoBusiness } from "../business/LocalizacaoBusiness";
-import { localizacaoAPIretorno } from "../types/tiposRetorno";
+import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
 
 export class LocalizacaoController {
   private localizacaoBusiness = new LocalizacaoBusiness();

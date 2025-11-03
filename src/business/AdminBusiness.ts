@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import argon2 from "argon2";
 import { LIMIT_WORKER_THREADS } from "sqlite3";
 import { application } from "express";
-import { localizacaoAPIretorno } from "../types/tiposRetorno";
+import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
 
 export class AdminBusiness {
   private adminData = new AdminData();

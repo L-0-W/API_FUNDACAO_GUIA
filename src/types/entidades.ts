@@ -1,11 +1,11 @@
-export interface admin {
+export type admin = {
   id: number;
   nome: string;
   email: string;
   senha: string;
-}
+};
 
-export interface setor {
+export type setor = {
   id: number;
   nome: string;
   tipo: string;
@@ -14,26 +14,26 @@ export interface setor {
   coordenada: string;
   descricao: string;
   ativo: boolean;
-}
+};
 
-export interface bloco {
+export type bloco = {
   id: number;
   nome: string;
   coordenada: string;
   descricao: string;
-}
+};
 
-interface referencia {
+type referencia = {
   imagem: string[];
   descricao: string;
-}
+};
 
-export interface referencias {
+export type referencias = {
   bloco: referencia;
   setor: referencia;
-}
+};
 
-export interface evento {
+export type evento = {
   id?: number;
   titulo?: string;
   descricao?: string;
@@ -41,9 +41,9 @@ export interface evento {
   data_fim?: number;
   status?: string;
   publico_alvo?: string;
-}
+};
 
-export interface noticia_DTO {
+export type noticia_DTO = {
   titulo: string;
   resumo: string;
   conteudo: string;
@@ -51,34 +51,28 @@ export interface noticia_DTO {
   tags?: string[];
   imagens?: string[];
   outros_links?: string[];
-}
+};
 
-export interface params_noticia {
+export type params_noticia = {
   recentes?: number;
   bloco?: string;
   setor?: string;
   exame?: string;
   tags?: string[];
-}
+};
 
-export interface exame {
+export type exame = {
   id: number;
   nome: string;
   descricao: string;
   local_id: number;
-}
+};
 
-export enum vagasStatus {
-  Ativa,
-  Encerrada,
-}
-export enum vagasVinculo {
-  CLT,
-  PJ,
-  ESTAGIO,
-}
+export type vagasStatus = "Ativa" | "Encerrada";
 
-export interface vagasEmprego {
+export type vagasVinculo = "CLT" | "PJ" | "ESTAGIO";
+
+export type vagasEmprego = {
   id?: number;
   cargo?: string;
   resumo?: string;
@@ -89,4 +83,4 @@ export interface vagasEmprego {
   status?: vagasStatus;
   como_se_inscrever?: string;
   tipo_vinculo?: vagasVinculo;
-}
+};

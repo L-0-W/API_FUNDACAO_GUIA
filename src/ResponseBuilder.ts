@@ -1,6 +1,6 @@
 import { Response } from "express";
-import { apiRetorno } from "./types/tiposRetorno";
-import { exame } from "./types/tiposComuns";
+import { apiRetorno } from "./types/apiRetornoTipos";
+import { exame } from "./types/entidades";
 
 export class ResponseBuilder<T> {
   public readonly STATUS_CODE_OK: number = 200;

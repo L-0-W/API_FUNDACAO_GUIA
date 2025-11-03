@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { vagasEmprego } from "../types/tiposComuns";
+import { vagasEmprego } from "../types/entidades";
 
 export class VagasData {
   buscarTodasVagas = async (): Promise<vagasEmprego[]> => {

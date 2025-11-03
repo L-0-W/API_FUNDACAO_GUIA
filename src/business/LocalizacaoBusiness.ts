@@ -1,7 +1,7 @@
 import { ResponseBuilder } from "../ResponseBuilder";
 import { LocalizacaoData } from "../data/LocalizacaoData";
-import { bloco, setor } from "../types/tiposComuns";
-import { localizacaoAPIretorno } from "../types/tiposRetorno";
+import { bloco, setor } from "../types/entidades";
+import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
 
 export class LocalizacaoBusiness {
   private localizacaoData = new LocalizacaoData();

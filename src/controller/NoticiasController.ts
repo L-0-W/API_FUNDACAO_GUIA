@@ -1,8 +1,8 @@
 import { NoticiaisBusiness } from "../business/NoticiasBusiness";
 import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
-import { noticiaAPIretorno } from "../types/tiposRetorno";
-import { params_noticia } from "../types/tiposComuns";
+import { noticiaAPIretorno } from "../types/apiRetornoTipos";
+import { params_noticia } from "../types/entidades";
 
 export class NoticiaisController {
   private noticiasBusiness = new NoticiaisBusiness();

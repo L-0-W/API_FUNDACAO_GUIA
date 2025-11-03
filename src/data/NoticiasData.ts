@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { noticia_DTO, params_noticia } from "../types/tiposComuns";
+import { noticia_DTO, params_noticia } from "../types/entidades";
 
 export class NoticiaisData {
   buscarNoticiaDefault = async (): Promise<noticia_DTO[]> => {

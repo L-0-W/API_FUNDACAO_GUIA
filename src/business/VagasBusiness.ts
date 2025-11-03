@@ -1,6 +1,6 @@
 import { VagasData } from "../data/VagasData";
 import { ResponseBuilder } from "../ResponseBuilder";
-import { vagasAPIretorno } from "../types/tiposRetorno";
+import { vagasAPIretorno } from "../types/apiRetornoTipos";
 
 export class VagasBusiness {
   private vagasData = new VagasData();
