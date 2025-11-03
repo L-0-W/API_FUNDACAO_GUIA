@@ -146,6 +146,7 @@ export class LocalizacaoBusiness {
     try {
       const exameFormatado = exame?.toLowerCase().trimStart().trimEnd();
       const setorFormatado = setor?.toLowerCase().trimStart().trimEnd();
+      const blocoFormatado = setor?.toLowerCase().trimStart().trimEnd();
 
       if (exame != undefined && exameFormatado?.length === 0) {
         responseBuilder.adicionarCodigoStatus(

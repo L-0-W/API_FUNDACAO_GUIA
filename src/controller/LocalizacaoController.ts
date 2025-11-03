@@ -10,20 +10,21 @@ export class LocalizacaoController {
     const responseBuilder = new ResponseBuilder<localizacaoAPIretorno>();
 
     try {
-      const { exame, setor } = req.query;
+      const { exame, setor, bloco } = req.query;
 
       console.log("Controller -> " + exame || setor);
 
       if (
         (!exame || exame.toString().trim().length === 0) &&
-        (!setor || setor.toString().trim().length === 0)
+        (!setor || setor.toString().trim().length === 0) &&
+        (!bloco || bloco.toString().trim().length === 0)
       ) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
         responseBuilder.adicionarMensagem(
-          "Parametro 'exame' e 'setor' esta incorreto, não existe ou invalido! e obrigatorio pelo menos 1 filtro de busca",
+          "Parametro 'exame', 'setor' e 'bloco'  esta incorreto, não existe ou invalido! e obrigatorio pelo menos 1 filtro de busca",
         );
         responseBuilder.construir(res);
         return;
@@ -53,10 +54,23 @@ export class LocalizacaoController {
         return;
       }
 
+      if (bloco?.toString().replaceAll("'", "").length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Parametro 'bloco' precisa ter conteudo, não pode ter apenas characteres especiais",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
       await this.localizacaoBusiness.obterLocalizacaoPorParametros(
         responseBuilder,
         exame?.toString().replaceAll("'", ""),
         setor?.toString().replaceAll("'", ""),
+        bloco?.toString().replaceAll("'", ""),
       );
 
       responseBuilder.construir(res);
