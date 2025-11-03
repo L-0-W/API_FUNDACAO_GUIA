@@ -2,6 +2,7 @@ import { VagasData } from "../data/VagasData";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { vagasAPIretorno } from "../types/apiRetornoTipos";
 import { filtrosVaga, vagasVinculo } from "../types/entidades";
+import { criarDataNoPassado } from "../utils/utilsTempo";
 
 export class VagasBusiness {
   private vagasData = new VagasData();
@@ -85,6 +86,8 @@ export class VagasBusiness {
             return;
         }
       }
+
+      const recentesTimeStamp = criarDataNoPassado(filtros.recentes as number);
 
       const filtros_array = Object.entries(filtros).map((e) => {
         return e[0] + ":" + e[1];
