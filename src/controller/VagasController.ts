@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { VagasBusiness } from "../business/VagasBusiness";
 import { vagasAPIretorno } from "../types/apiRetornoTipos";
-import { filtrosVaga } from "../types/entidades";
+import { filtrosVaga, vagasVinculo } from "../types/entidades";
 
 export class VagasController {
   private vagasBusiness = new VagasBusiness();
@@ -61,15 +61,15 @@ export class VagasController {
     const responseBuilder = new ResponseBuilder<vagasAPIretorno>();
 
     try {
-      const { cargo, cidade, modalidade, tipo_vinculo } = req.query;
+      const { cargo, cidade, modalidade, tipo_vinculo, recentes } = req.query;
 
-      if (!cargo && !cidade && modalidade && tipo_vinculo) {
+      if (!cargo && !cidade && modalidade && tipo_vinculo && recentes) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
         responseBuilder.adicionarMensagem(
-          "Parametro: 'cargo', 'cidade', modalidade, tipo_vinculo esta incorreto ou faltando!",
+          "Parametro: 'cargo', 'cidade', 'modalidade', 'tipo_vinculo', 'recentes' esta incorreto ou faltando!",
         );
 
         responseBuilder.construir(res);
@@ -128,7 +128,35 @@ export class VagasController {
         return;
       }
 
+      if (recentes?.toString().trim().length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Parametro: 'recentes' precisa ter algum conteudo!",
+        );
+
+        responseBuilder.construir(res);
+        return;
+      }
+
       let filtros: filtrosVaga = {};
+
+      const recentes_numerico = Number(recentes);
+
+      if (!Number.isInteger(recentes_numerico)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Parametro: 'recentes' precisa ter ser numerico e inteiro!",
+        );
+
+        responseBuilder.construir(res);
+        return;
+      }
 
       cargo != undefined ? (filtros.cargo = cargo.toString()) : undefined;
       cidade != undefined ? (filtros.cidade = cidade.toString()) : undefined;
@@ -136,7 +164,10 @@ export class VagasController {
         ? (filtros.modalidade = modalidade.toString())
         : undefined;
       tipo_vinculo != undefined
-        ? (filtros.tipo_vinculo = tipo_vinculo.toString())
+        ? (filtros.tipo_vinculo = tipo_vinculo.toString().toUpperCase())
+        : undefined;
+      recentes != undefined
+        ? (filtros.recentes = recentes_numerico)
         : undefined;
 
       await this.vagasBusiness.obterVagaPorFiltro(filtros, responseBuilder);

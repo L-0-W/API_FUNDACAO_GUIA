@@ -44,6 +44,14 @@ export class VagasData {
             if (filtro[0] === "cidade") {
               builder.andWhereLike("cidade", filtro[1]);
             }
+
+            if (filtro[0] === "modalidade") {
+              builder.andWhereLike("modalidade", filtro[1]);
+            }
+
+            if (filtro[0] === "tipo_vinculo") {
+              builder.andWhereLike("tipo_vinculo", filtro[1]);
+            }
           });
         });
 
