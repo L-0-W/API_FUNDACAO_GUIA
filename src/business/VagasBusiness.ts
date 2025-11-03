@@ -1,6 +1,7 @@
 import { VagasData } from "../data/VagasData";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { vagasAPIretorno } from "../types/apiRetornoTipos";
+import { filtrosVaga } from "../types/entidades";
 
 export class VagasBusiness {
   private vagasData = new VagasData();
@@ -60,10 +61,17 @@ export class VagasBusiness {
   };
 
   obterVagaPorFiltro = async (
-    cargo: string,
+    filtros: filtrosVaga,
     responseBuilder: ResponseBuilder<vagasAPIretorno>,
   ) => {
     try {
+      const filtros_array = Object.entries(filtros).map((e) => {
+        return e[0] + ":" + e[1];
+      });
+
+      console.log(filtros_array);
+
+      await this.vagasData.buscarVagaPorFiltro(filtros_array);
       return;
     } catch (err: any) {
       throw new Error(err);

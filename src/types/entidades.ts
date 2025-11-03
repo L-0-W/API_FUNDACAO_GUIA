@@ -34,12 +34,12 @@ export type referencias = {
 };
 
 export type filtrosVaga = {
-  beneficios: string[];
-  cidade: string;
-  cargo: string;
-  modalidade: string;
-  tipo_vinculo: string;
-  recentes: number;
+  beneficios?: string[] | string;
+  cidade?: string;
+  cargo?: string;
+  modalidade?: string;
+  tipo_vinculo?: string;
+  recentes?: number;
 };
 
 export type evento = {

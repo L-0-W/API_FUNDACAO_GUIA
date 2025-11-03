@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { VagasBusiness } from "../business/VagasBusiness";
 import { vagasAPIretorno } from "../types/apiRetornoTipos";
+import { filtrosVaga } from "../types/entidades";
 
 export class VagasController {
   private vagasBusiness = new VagasBusiness();
@@ -60,22 +61,22 @@ export class VagasController {
     const responseBuilder = new ResponseBuilder<vagasAPIretorno>();
 
     try {
-      const { cargo } = req.query;
+      const { cargo, cidade, modalidade, tipo_vinculo } = req.query;
 
-      if (!cargo) {
+      if (!cargo && !cidade && modalidade && tipo_vinculo) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
         responseBuilder.adicionarMensagem(
-          "Parametro: 'cargo' esta incorreto ou faltando!",
+          "Parametro: 'cargo', 'cidade', modalidade, tipo_vinculo esta incorreto ou faltando!",
         );
 
         responseBuilder.construir(res);
         return;
       }
 
-      if (cargo.toString().trim().length === 0) {
+      if (cargo?.toString().trim().length === 0) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
@@ -88,10 +89,57 @@ export class VagasController {
         return;
       }
 
-      await this.vagasBusiness.obterVagaPorFiltro(
-        cargo.toString().toLowerCase(),
-        responseBuilder,
-      );
+      if (cidade?.toString().trim().length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Parametro: 'cidade' precisa ter algum conteudo!",
+        );
+
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (modalidade?.toString().trim().length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Parametro: 'modalidade' precisa ter algum conteudo!",
+        );
+
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (tipo_vinculo?.toString().trim().length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Parametro: 'tipo_vinculo' precisa ter algum conteudo!",
+        );
+
+        responseBuilder.construir(res);
+        return;
+      }
+
+      let filtros: filtrosVaga = {};
+
+      cargo != undefined ? (filtros.cargo = cargo.toString()) : undefined;
+      cidade != undefined ? (filtros.cidade = cidade.toString()) : undefined;
+      modalidade != undefined
+        ? (filtros.modalidade = modalidade.toString())
+        : undefined;
+      tipo_vinculo != undefined
+        ? (filtros.tipo_vinculo = tipo_vinculo.toString())
+        : undefined;
+
+      await this.vagasBusiness.obterVagaPorFiltro(filtros, responseBuilder);
       responseBuilder.construir(res);
     } catch (err: any) {
       responseBuilder.adicionarCodigoStatus(
