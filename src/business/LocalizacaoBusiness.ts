@@ -57,6 +57,15 @@ export class LocalizacaoBusiness {
           "Erro ao tentar relacionar setor com bloco..",
         );
       }
+
+      responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
+      responseBuilder.adicionarBody({
+        exames: exames,
+        setor: setor,
+        bloco: bloco,
+      });
+
+      return;
     } catch (err: any) {
       throw new Error(err);
     }
@@ -100,6 +109,7 @@ export class LocalizacaoBusiness {
         return;
       }
 
+      console.log(setor.bloco_id);
       const bloco: bloco = await this.localizacaoData.buscarBlocoPorId(
         setor.bloco_id,
       );
@@ -113,6 +123,15 @@ export class LocalizacaoBusiness {
           "Erro ao tentar relacionar setor com bloco..",
         );
       }
+
+      responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
+      responseBuilder.adicionarBody({
+        exames: exames,
+        setor: setor,
+        bloco: bloco,
+      });
+
+      return;
     } catch (err: any) {
       throw new Error(err);
     }
@@ -126,9 +145,9 @@ export class LocalizacaoBusiness {
   ) => {
     try {
       const exameFormatado = exame?.toLowerCase().trimStart().trimEnd();
-      const setorFormatado = exame?.toLowerCase().trimStart().trimEnd();
+      const setorFormatado = setor?.toLowerCase().trimStart().trimEnd();
 
-      if (!exameFormatado || exameFormatado.length === 0) {
+      if (exame != undefined && exameFormatado?.length === 0) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
         );
@@ -139,7 +158,7 @@ export class LocalizacaoBusiness {
         return;
       }
 
-      if (!setorFormatado || setorFormatado.length === 0) {
+      if (setor != undefined && setorFormatado?.length === 0) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
         );
@@ -152,10 +171,14 @@ export class LocalizacaoBusiness {
 
       console.log("Business ->" + exameFormatado + " " + setorFormatado);
 
-      exameFormatado != undefined
-        ? this.lidarBuscarExame(exameFormatado, responseBuilder)
-        : setorFormatado != undefined
-          ? this.
+      if (exameFormatado) {
+        await this.lidarBuscarExame(exameFormatado, responseBuilder);
+        return;
+      } else if (setorFormatado) {
+        await this.lidarBuscarSetor(setorFormatado, responseBuilder);
+        return;
+      }
+
       return;
     } catch (err: any) {
       throw new Error(err);
