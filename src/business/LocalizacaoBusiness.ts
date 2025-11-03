@@ -7,8 +7,10 @@ export class LocalizacaoBusiness {
   private localizacaoData = new LocalizacaoData();
 
   obterLocalizacaoPorParametros = async (
-    exame: string,
     responseBuilder: ResponseBuilder<localizacaoAPIretorno>,
+    exame?: string,
+    setor?: string,
+    bloco?: string,
   ) => {
     try {
       const exameFormatado = exame.toLowerCase().trimStart().trimEnd();
