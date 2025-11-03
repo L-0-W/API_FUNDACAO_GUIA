@@ -11,7 +11,7 @@ export class LocalizacaoBusiness {
     responseBuilder: ResponseBuilder<localizacaoAPIretorno>,
   ) => {
     try {
-      const exameFormatado = exame.toLocaleLowerCase().trimStart().trimEnd();
+      const exameFormatado = exame.toLowerCase().trimStart().trimEnd();
 
       if (!exameFormatado || exameFormatado.length === 0) {
         responseBuilder.adicionarCodigoStatus(
