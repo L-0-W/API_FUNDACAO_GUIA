@@ -28,6 +28,34 @@ export class LocalizacaoData {
     }
   };
 
+  buscarExamesPorSetor = async (setorId: number): Promise<exame[]> => {
+    try {
+      const setor = await connection()
+        .select("*")
+        .from("exames")
+        .where("local_id", setorId);
+
+      return setor;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  buscarSetor = async (setor: string): Promise<setor> => {
+    try {
+      const setorAchado = await connection()
+        .select("*")
+        .from("local")
+        .where("tipo", "setor")
+        .andWhereLike("nome", setor)
+        .first();
+
+      return setorAchado;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
   buscarBlocoPorId = async (blocoId: number): Promise<bloco> => {
     try {
       const bloco = await connection()
