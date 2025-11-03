@@ -29,7 +29,7 @@ export class NoticiaisController {
         return;
       }
 
-      if ((tags && tags.toString().split(","), length === 0)) {
+      if (tags && tags.toString().split(",").length === 0) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
