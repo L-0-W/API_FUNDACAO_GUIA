@@ -10,7 +10,7 @@ export class VagasController {
   buscarTodasVagas = async (req: Request, res: Response) => {
     try {
       await this.vagasBusiness.obterTodasAsVagas(this.responseBuilder);
-      this.responseBuilder.build(res);
+      this.responseBuilder.construir(res);
     } catch (err: any) {
       this.responseBuilder.adicionarCodigoStatus(
         this.responseBuilder.STATUS_CODE_SERVER_ERROR,
@@ -20,7 +20,7 @@ export class VagasController {
         `${err.sqlMessage || err.message}`,
       );
 
-      this.responseBuilder.build(res);
+      this.responseBuilder.construir(res);
     }
   };
 
@@ -30,20 +30,20 @@ export class VagasController {
 
       if (!vagaId || !Number.isInteger(vagaId)) {
         this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_BAD_REQUEST,
+          this.responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
         this.responseBuilder.adicionarMensagem(
           "Parametro: 'id' esta incorreto ou faltando!",
         );
 
-        this.responseBuilder.build(res);
+        this.responseBuilder.construir(res);
         return;
       }
 
       await this.vagasBusiness.obterVagaPorId(vagaId, this.responseBuilder);
 
-      this.responseBuilder.build(res);
+      this.responseBuilder.construir(res);
     } catch (err: any) {
       this.responseBuilder.adicionarCodigoStatus(
         this.responseBuilder.STATUS_CODE_SERVER_ERROR,
@@ -53,7 +53,7 @@ export class VagasController {
         `${err.sqlMessage || err.message}`,
       );
 
-      this.responseBuilder.build(res);
+      this.responseBuilder.construir(res);
     }
   };
 }

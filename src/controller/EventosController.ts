@@ -10,14 +10,14 @@ export class EventosController {
   buscarTodosEventos = async (req: Request, res: Response) => {
     try {
       await this.eventosBusiness.obterTodosEventos(this.responseBuilder);
-      this.responseBuilder.build(res);
+      this.responseBuilder.construir(res);
     } catch (err: any) {
       this.responseBuilder.adicionarCodigoStatus(
         this.responseBuilder.STATUS_CODE_SERVER_ERROR,
       );
 
       this.responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      this.responseBuilder.build(res);
+      this.responseBuilder.construir(res);
     }
   };
 
@@ -27,14 +27,14 @@ export class EventosController {
 
       if (isNaN(eventoId) || !Number.isInteger(eventoId)) {
         this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_BAD_REQUEST,
+          this.responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
         this.responseBuilder.adicionarMensagem(
           "O parametro 'id' precisa ser um numero inteiro!",
         );
 
-        this.responseBuilder.build(res);
+        this.responseBuilder.construir(res);
         return;
       }
 
@@ -43,14 +43,14 @@ export class EventosController {
         this.responseBuilder,
       );
 
-      this.responseBuilder.build(res);
+      this.responseBuilder.construir(res);
     } catch (err: any) {
       this.responseBuilder.adicionarCodigoStatus(
         this.responseBuilder.STATUS_CODE_SERVER_ERROR,
       );
 
       this.responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      this.responseBuilder.build(res);
+      this.responseBuilder.construir(res);
     }
   };
 }

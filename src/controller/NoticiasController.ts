@@ -22,7 +22,7 @@ export class NoticiaisController {
           "Foi coloado um valor incorreto no parametro 'recentes'..",
         );
 
-        this.responseBuilder.build(res);
+        this.responseBuilder.construir(res);
 
         return;
       }
@@ -41,7 +41,7 @@ export class NoticiaisController {
         this.responseBuilder,
       );
 
-      this.responseBuilder.build(res);
+      this.responseBuilder.construir(res);
       return;
     } catch (err: any) {
       this.responseBuilder.adicionarCodigoStatus(
@@ -49,7 +49,7 @@ export class NoticiaisController {
       );
 
       this.responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      this.responseBuilder.build(res);
+      this.responseBuilder.construir(res);
     }
   };
 }
