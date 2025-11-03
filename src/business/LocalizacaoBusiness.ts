@@ -163,41 +163,45 @@ export class LocalizacaoBusiness {
         bloco.id,
       );
 
-      const exames: exame[] = await this.localizacaoData.buscarExamesPorSetor(
-        setor.id,
-      );
-
-      if (!exames) {
+      if (!setores || setores.length === 0) {
+        console.log("Business -> Erro, voltando vazio");
         responseBuilder.adicionarCodigoStatus(
-          responseBuilder.STATUS_CODE_SERVER_ERROR,
+          responseBuilder.STATUS_CODE_VAZIO,
         );
 
         responseBuilder.adicionarMensagem(
-          "Não foi achado nemhum exames para esse setor!",
+          "Não foi encontrado nemhum setor para esse bloco!",
         );
 
         return;
       }
 
-      console.log(setor.bloco_id);
-      const bloco: bloco = await this.localizacaoData.buscarBlocoPorId(
-        setor.bloco_id,
-      );
+      let exames: exame[] = [];
 
-      if (!bloco) {
+      for (let i = 0; i < setores.length; i++) {
+        exames.push(
+          ...(await this.localizacaoData.buscarExamesPorSetor(
+            setores[i]?.id as number,
+          )),
+        );
+      }
+
+      if (!exames || exames.length === 0) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_SERVER_ERROR,
         );
 
         responseBuilder.adicionarMensagem(
-          "Erro ao tentar relacionar setor com bloco..",
+          "Não foi achado nemhum exame para esses setores desse bloco!",
         );
+
+        return;
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
       responseBuilder.adicionarBody({
         exames: exames,
-        setor: setor,
+        setor: setores,
         bloco: bloco,
       });
 
@@ -216,7 +220,7 @@ export class LocalizacaoBusiness {
     try {
       const exameFormatado = exame?.toLowerCase().trimStart().trimEnd();
       const setorFormatado = setor?.toLowerCase().trimStart().trimEnd();
-      const blocoFormatado = setor?.toLowerCase().trimStart().trimEnd();
+      const blocoFormatado = bloco?.toLowerCase().trimStart().trimEnd();
 
       if (exame != undefined && exameFormatado?.length === 0) {
         responseBuilder.adicionarCodigoStatus(
@@ -267,6 +271,7 @@ export class LocalizacaoBusiness {
         await this.lidarBuscarSetor(setorFormatado, responseBuilder);
         return;
       } else if (blocoFormatado) {
+        console.log(blocoFormatado);
         await this.lidarBuscarBloco(blocoFormatado, responseBuilder);
         return;
       }
