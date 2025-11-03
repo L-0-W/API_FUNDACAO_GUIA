@@ -9,9 +9,9 @@ import {
 } from "./entidades";
 
 export type localizacaoAPIretorno = {
-  exames?: exame[];
-  setor?: setor[];
-  bloco?: bloco[];
+  exames?: exame[] | exame;
+  setor?: setor[] | setor;
+  bloco?: bloco[] | bloco;
   andar?: string;
   coordenada?: string;
   referencias?: referencias;

@@ -7,7 +7,7 @@ export class LocalizacaoData {
       const exames = await connection
         .select("*")
         .from("exames")
-        .where("nome", exame)
+        .whereLike("nome", exame)
         .first();
       return exames;
     } catch (err: any) {
@@ -19,7 +19,7 @@ export class LocalizacaoData {
     try {
       const setor = await connection()
         .select("*")
-        .from("locais")
+        .from("local")
         .where("id", setorId)
         .first();
       return setor;
@@ -32,7 +32,7 @@ export class LocalizacaoData {
     try {
       const bloco = await connection()
         .select("*")
-        .from("bloco")
+        .from("blocos")
         .where("id", blocoId)
         .first();
 

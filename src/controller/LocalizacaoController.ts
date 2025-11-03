@@ -12,6 +12,8 @@ export class LocalizacaoController {
     try {
       const { exame } = req.query;
 
+      console.log("Controller -> " + exame);
+
       if (!exame || exame.toString().trim().length === 0) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,

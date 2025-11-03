@@ -24,9 +24,13 @@ export class LocalizacaoBusiness {
         return;
       }
 
+      console.log("Business ->" + exameFormatado);
       const exames = await this.localizacaoData.buscarExames(exameFormatado);
 
-      if (!exames) {
+      console.log("Business -> " + exames);
+
+      if (!exames || exame == undefined) {
+        console.log("Business -> Erro, voltando vazio");
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_VAZIO,
         );
@@ -72,9 +76,9 @@ export class LocalizacaoBusiness {
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
       responseBuilder.adicionarBody({
-        exames: [exames],
-        setor: [setor],
-        bloco: [bloco],
+        exames: exames,
+        setor: setor,
+        bloco: bloco,
       });
 
       return;
