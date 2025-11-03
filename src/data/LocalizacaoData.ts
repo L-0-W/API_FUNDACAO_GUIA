@@ -41,6 +41,19 @@ export class LocalizacaoData {
     }
   };
 
+  buscarSetoresPorBloco = async (blocoId: number): Promise<setor[]> => {
+    try {
+      const setor = await connection()
+        .select("*")
+        .from("local")
+        .where("bloco_id", blocoId);
+
+      return setor;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
   buscarSetor = async (setor: string): Promise<setor> => {
     try {
       const setorAchado = await connection()
@@ -51,6 +64,20 @@ export class LocalizacaoData {
         .first();
 
       return setorAchado;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  buscarBloco = async (bloco: string): Promise<bloco> => {
+    try {
+      const exames = await connection
+        .select("*")
+        .from("blocos")
+        .whereLike("nome", bloco)
+        .first();
+
+      return exames;
     } catch (err: any) {
       throw new Error(err);
     }

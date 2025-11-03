@@ -137,6 +137,76 @@ export class LocalizacaoBusiness {
     }
   };
 
+  private lidarBuscarBloco = async (
+    blocoFormatado: string,
+    responseBuilder: ResponseBuilder<localizacaoAPIretorno>,
+  ) => {
+    try {
+      const bloco = await this.localizacaoData.buscarBloco(blocoFormatado);
+
+      console.log("Business -> " + bloco);
+
+      if (!bloco || bloco == undefined) {
+        console.log("Business -> Erro, voltando vazio");
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_VAZIO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Não existe nehum bloco com esse nome!",
+        );
+
+        return;
+      }
+
+      const setores: setor[] = await this.localizacaoData.buscarSetoresPorBloco(
+        bloco.id,
+      );
+
+      const exames: exame[] = await this.localizacaoData.buscarExamesPorSetor(
+        setor.id,
+      );
+
+      if (!exames) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Não foi achado nemhum exames para esse setor!",
+        );
+
+        return;
+      }
+
+      console.log(setor.bloco_id);
+      const bloco: bloco = await this.localizacaoData.buscarBlocoPorId(
+        setor.bloco_id,
+      );
+
+      if (!bloco) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Erro ao tentar relacionar setor com bloco..",
+        );
+      }
+
+      responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
+      responseBuilder.adicionarBody({
+        exames: exames,
+        setor: setor,
+        bloco: bloco,
+      });
+
+      return;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
   obterLocalizacaoPorParametros = async (
     responseBuilder: ResponseBuilder<localizacaoAPIretorno>,
     exame?: string,
@@ -164,19 +234,40 @@ export class LocalizacaoBusiness {
           responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
         );
         responseBuilder.adicionarMensagem(
-          "Erro ao formatar parametro 'setor', certifique-se que exame esta preenchido.",
+          "Erro ao formatar parametro 'setor', certifique-se que setor esta preenchido.",
         );
 
         return;
       }
 
-      console.log("Business ->" + exameFormatado + " " + setorFormatado);
+      if (bloco != undefined && blocoFormatado?.length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro ao formatar parametro 'bloco', certifique-se que bloco esta preenchido.",
+        );
+
+        return;
+      }
+
+      console.log(
+        "Business ->" +
+          exameFormatado +
+          " " +
+          setorFormatado +
+          "  " +
+          blocoFormatado,
+      );
 
       if (exameFormatado) {
         await this.lidarBuscarExame(exameFormatado, responseBuilder);
         return;
       } else if (setorFormatado) {
         await this.lidarBuscarSetor(setorFormatado, responseBuilder);
+        return;
+      } else if (blocoFormatado) {
+        await this.lidarBuscarBloco(blocoFormatado, responseBuilder);
         return;
       }
 
