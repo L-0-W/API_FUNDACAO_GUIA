@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { AdminBusiness } from "../business/AdminBusiness";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
+import { verificarToken } from "../middleware/jwtVerificacao";
 
 export class AdminController {
   private adminBusiness = new AdminBusiness();
@@ -31,6 +32,33 @@ export class AdminController {
 
         responseBuilder.adicionarMensagem("Token necessario não existe");
         responseBuilder.construir(res);
+
+        return;
+      }
+
+      const tokenFormatado = jwt_auth.split("Bearer ")[1];
+
+      if (tokenFormatado == undefined) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+        );
+
+        responseBuilder.adicionarMensagem("Erro ao tentar formatar token...");
+        return;
+      }
+
+      const eValido = verificarToken(tokenFormatado);
+
+      console.log(eValido);
+
+      if (!eValido) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_NAO_AUTORIZADO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "O token recebido esta expirado ou não e valido...",
+        );
 
         return;
       }
