@@ -118,7 +118,36 @@ export class AdminBusiness {
         }
       });
 
+      const id = Number(exame_values[3]);
+
+      if (!Number.isInteger(id)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro ao tentar transformar 'local_id' em numero, verifique se e um numero inteiro e se existe!",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const localExiste = await this.adminData.buscarLocalPorId(id);
+
+      if (!localExiste) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro ao tentar encontrar local usando 'local_id', verifique se esse local existe!",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
       const examesCriados = await this.adminData.criarExame(exame_values);
+
       responseBuilder.adicionarCodigoStatus(
         responseBuilder.STATUS_CODE_OK_CRIADO,
       );
