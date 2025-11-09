@@ -6,6 +6,9 @@ import {
   localizacaoAPIretorno,
 } from "../types/apiRetornoTipos";
 import { exame } from "../types/entidades";
+import { X509Certificate } from "node:crypto";
+import e from "cors";
+import { describe } from "node:test";
 
 export class AdminBusiness {
   private adminData = new AdminData();
@@ -72,7 +75,58 @@ export class AdminBusiness {
     exame_values: string[],
   ) => {
     try {
-      if (exame_values.sucesso)
+      const tokenFormatado = token.split("Bearer ")[1];
+
+      if (tokenFormatado === undefined) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, algo de errado esta no seu header de autorização",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const eValido = verificarToken(tokenFormatado);
+
+      if (!eValido) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, TOKEN incorreto ou expirado!",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      exame_values.forEach((e) => {
+        if (e.trim().length === 0) {
+          responseBuilder.adicionarCodigoStatus(
+            responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+          );
+
+          responseBuilder.adicionarMensagem(
+            "Parametros não pode incluir apenas espaços, e necessario algum valor",
+          );
+
+          responseBuilder.adicionarBody({ sucesso: false });
+          return;
+        }
+      });
+
+      const examesCriados = await this.adminData.criarExame(exame_values);
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_OK_CRIADO,
+      );
+      responseBuilder.adicionarBody({
+        sucesso: true,
+        total: 1,
+        data: examesCriados,
+      });
     } catch (err: any) {
       throw new Error(err);
     }

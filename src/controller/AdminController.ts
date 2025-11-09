@@ -92,6 +92,8 @@ export class AdminController {
         jwt_auth,
         [nome, descricao, local_id],
       );
+
+      responseBuilder.construir(res);
     } catch (err: any) {
       responseBuilder.adicionarCodigoStatus(
         responseBuilder.STATUS_CODE_SERVER_ERROR,

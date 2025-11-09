@@ -39,7 +39,7 @@ export type apiRetorno<T> = {
 
 export type adminAPIretorno<T> = {
   sucesso?: boolean;
-  data?: T;
+  data?: T[];
   total?: number;
   mensagem?: string;
 };
