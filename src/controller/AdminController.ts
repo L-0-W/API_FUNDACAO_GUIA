@@ -1,14 +1,17 @@
 import { Request, Response } from "express";
 import { AdminBusiness } from "../business/AdminBusiness";
 import { ResponseBuilder } from "../ResponseBuilder";
-import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
-import { verificarToken } from "../middleware/jwtVerificacao";
+import {
+  adminAPIretorno,
+  localizacaoAPIretorno,
+} from "../types/apiRetornoTipos";
+import { exame } from "../types/entidades";
 
 export class AdminController {
   private adminBusiness = new AdminBusiness();
 
   deletarExamePorId = async (req: Request, res: Response) => {
-    const responseBuilder = new ResponseBuilder<localizacaoAPIretorno>();
+    const responseBuilder = new ResponseBuilder<adminAPIretorno<exame>>();
 
     try {
       const id = Number(req.params.id);
@@ -20,6 +23,8 @@ export class AdminController {
         );
 
         responseBuilder.adicionarMensagem("Id esta incorreto..");
+        responseBuilder.adicionarBody({ sucesso: false });
+
         responseBuilder.construir(res);
 
         return;
@@ -31,34 +36,9 @@ export class AdminController {
         );
 
         responseBuilder.adicionarMensagem("Token necessario não existe");
+        responseBuilder.adicionarBody({ sucesso: false });
+
         responseBuilder.construir(res);
-
-        return;
-      }
-
-      const tokenFormatado = jwt_auth.split("Bearer ")[1];
-
-      if (tokenFormatado == undefined) {
-        responseBuilder.adicionarCodigoStatus(
-          responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
-        );
-
-        responseBuilder.adicionarMensagem("Erro ao tentar formatar token...");
-        return;
-      }
-
-      const eValido = verificarToken(tokenFormatado);
-
-      console.log(eValido);
-
-      if (!eValido) {
-        responseBuilder.adicionarCodigoStatus(
-          responseBuilder.STATUS_CODE_NAO_AUTORIZADO,
-        );
-
-        responseBuilder.adicionarMensagem(
-          "O token recebido esta expirado ou não e valido...",
-        );
 
         return;
       }
@@ -77,10 +57,11 @@ export class AdminController {
   };
 
   criarExame = async (req: Request, res: Response) => {
-    const responseBuilder = new ResponseBuilder<localizacaoAPIretorno>();
+    const responseBuilder = new ResponseBuilder<adminAPIretorno<exame>>();
 
     try {
       const { nome, descricao, local_id } = req.body;
+      const jwt_auth = req.headers.authorization;
 
       if (!nome || !descricao || !local_id) {
         responseBuilder.adicionarCodigoStatus(
@@ -93,11 +74,24 @@ export class AdminController {
         return;
       }
 
-      await this.adminBusiness.executarLogicaCriacaoExame(responseBuilder, {
-        nome,
-        descricao,
-        local_id,
-      });
+      if (!jwt_auth) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, TOKEN de verificação admin não foi encontrado!",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        responseBuilder.construir(res);
+        return;
+      }
+
+      await this.adminBusiness.executarLogicaCriacaoExame(
+        responseBuilder,
+        jwt_auth,
+        [nome, descricao, local_id],
+      );
     } catch (err: any) {
       responseBuilder.adicionarCodigoStatus(
         responseBuilder.STATUS_CODE_SERVER_ERROR,
