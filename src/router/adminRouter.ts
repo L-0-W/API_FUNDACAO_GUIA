@@ -5,3 +5,4 @@ export const adminRouter = express.Router();
 const adminController = new AdminController();
 
 adminRouter.delete("/exame/:id", adminController.deletarExamePorId);
+adminRouter.post("/exame", adminController.criarExame);

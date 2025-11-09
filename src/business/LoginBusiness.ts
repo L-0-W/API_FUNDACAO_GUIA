@@ -46,6 +46,7 @@ export class LoginBusiness {
       );
 
       if (!eValido) {
+        console.log("Usuario existe, mas senha esta incorreta");
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_NAO_AUTORIZADO,
         );

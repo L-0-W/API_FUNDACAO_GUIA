@@ -47,4 +47,36 @@ export class AdminController {
       responseBuilder.construir(res);
     }
   };
+
+  criarExame = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<localizacaoAPIretorno>();
+
+    try {
+      const { nome, descricao, local_id } = req.body;
+
+      if (!nome || !descricao || !local_id) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, todos os parametros: 'nome', 'descricao', 'local_id' são obrigatorios!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      await this.adminBusiness.executarLogicaCriacaoExame(responseBuilder, {
+        nome,
+        descricao,
+        local_id,
+      });
+    } catch (err: any) {
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
+      );
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+
+      responseBuilder.construir(res);
+    }
+  };
 }
