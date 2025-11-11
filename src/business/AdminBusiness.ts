@@ -160,4 +160,97 @@ export class AdminBusiness {
       throw new Error(err);
     }
   };
+
+  executarLogicaPatchExame = async (
+    responseBuilder: ResponseBuilder<adminAPIretorno<exame>>,
+    token: string,
+    exame_values: string[],
+    id_exame: number,
+  ) => {
+    try {
+      const tokenFormatado = token.split("Bearer ")[1];
+
+      if (tokenFormatado === undefined) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, algo de errado esta no seu header de autorização",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const eValido = verificarToken(tokenFormatado);
+
+      if (!eValido) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, TOKEN incorreto ou expirado!",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      exame_values.forEach((e) => {
+        if (e.trim().length === 0) {
+          responseBuilder.adicionarCodigoStatus(
+            responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+          );
+
+          responseBuilder.adicionarMensagem(
+            "Parametros não pode incluir apenas espaços, e necessario algum valor",
+          );
+
+          responseBuilder.adicionarBody({ sucesso: false });
+          return;
+        }
+      });
+
+      const id = Number(exame_values[3]);
+
+      if (!Number.isInteger(id)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro ao tentar transformar 'local_id' em numero, verifique se e um numero inteiro e se existe!",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const exameExiste = await this.adminData.buscarLocalPorId(id);
+
+      if (!exameExiste) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro ao tentar encontrar exame usando 'id' fornecido, verifique se esse exame existe!",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const examePatch = await this.adminData.patchExame(id, exame_values);
+
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_OK_CRIADO,
+      );
+      responseBuilder.adicionarBody({
+        sucesso: true,
+        total: 1,
+        data: examePatch,
+      });
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
 }

@@ -16,6 +16,20 @@ export class AdminData {
     }
   };
 
+  buscarExamePorId = async (id: number): Promise<any> => {
+    try {
+      const local = await connection
+        .select("id")
+        .from("exames")
+        .where("id_incremental", id)
+        .first();
+
+      return local;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
   deletarExamePorId = async (id: number): Promise<number> => {
     try {
       const exame = await connection
@@ -44,6 +58,21 @@ export class AdminData {
           ["*"],
         )
         .into("exames");
+
+      return examesCriados;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  patchExame = async (id: number, valores: string[]): Promise<exame[]> => {
+    try {
+      const examesCriados = await connection("exames")
+        .where("id_incremental", id)
+        .update(
+          { nome: valores[0], descricao: valores[1], local_id: valores[3] },
+          ["*"],
+        );
 
       return examesCriados;
     } catch (err: any) {

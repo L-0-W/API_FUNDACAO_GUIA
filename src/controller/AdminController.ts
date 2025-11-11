@@ -103,4 +103,63 @@ export class AdminController {
       responseBuilder.construir(res);
     }
   };
+
+  patchExame = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<adminAPIretorno<exame>>();
+
+    try {
+      const { nome, descricao, local_id } = req.body;
+      const id = Number(req.params.id);
+      const jwt_auth = req.headers.authorization;
+
+      if (!Number.isInteger(id)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem("Erro, parametro id esta incorreto");
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (!nome || !descricao || !local_id) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, todos os parametros: 'nome', 'descricao', 'local_id' são obrigatorios!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (!jwt_auth) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, TOKEN de verificação admin não foi encontrado!",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        responseBuilder.construir(res);
+        return;
+      }
+
+      await this.adminBusiness.executarLogicaPatchExame(
+        responseBuilder,
+        jwt_auth,
+        [nome, descricao, local_id],
+        id,
+      );
+
+      responseBuilder.construir(res);
+    } catch (err: any) {
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
+      );
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+
+      responseBuilder.construir(res);
+    }
+  };
 }
