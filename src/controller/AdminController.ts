@@ -466,6 +466,111 @@ export class AdminController {
     }
   };
 
+  patchNoticia = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<adminAPIretorno<noticia>>();
+
+    try {
+      const {
+        noticia_id_fundacao,
+        titulo,
+        resumo,
+        conteudo,
+        data_publicacao,
+        tags,
+        imagens,
+        outros_links,
+      } = req.body;
+
+      const id = Number(req.params.id);
+      const jwt_auth = req.headers.authorization;
+
+      if (!Number.isInteger(id)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem("Erro, parâmetro id está incorreto");
+        responseBuilder.construir(res);
+        return;
+      }
+
+      // Validações obrigatórias
+      if (!noticia_id_fundacao || !titulo || !conteudo || !data_publicacao) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, todos os campos obrigatórios: 'noticia_id_fundacao', 'titulo', 'conteudo' e 'data_publicacao' devem ser fornecidos!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      // Validação do noticia_id_fundacao
+      if (
+        !Number.isInteger(Number(noticia_id_fundacao)) ||
+        Number(noticia_id_fundacao) <= 0
+      ) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'noticia_id_fundacao' deve ser um número inteiro positivo!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      // Validação da data_publicacao
+      const data = new Date(data_publicacao);
+      if (isNaN(data.getTime())) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'data_publicacao' deve ser uma data válida!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (!jwt_auth) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, TOKEN de verificação admin não foi encontrado!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        responseBuilder.construir(res);
+        return;
+      }
+
+      await this.adminBusiness.executarLogicaPatchNoticia(
+        responseBuilder,
+        jwt_auth,
+        [
+          noticia_id_fundacao,
+          titulo,
+          resumo,
+          conteudo,
+          data_publicacao,
+          tags,
+          imagens,
+          outros_links,
+        ],
+        id,
+      );
+
+      responseBuilder.construir(res);
+    } catch (err: any) {
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
+      );
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      responseBuilder.construir(res);
+    }
+  };
+
   patchVaga = async (req: Request, res: Response) => {
     const responseBuilder = new ResponseBuilder<
       adminAPIretorno<vagasEmprego>

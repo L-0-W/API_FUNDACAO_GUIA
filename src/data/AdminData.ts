@@ -30,6 +30,20 @@ export class AdminData {
     }
   };
 
+  buscarNoticiaPorId = async (id: number): Promise<any> => {
+    try {
+      const noticia = await connection
+        .select("id")
+        .from("noticias")
+        .where("id_incremental", id)
+        .first();
+
+      return noticia;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
   buscarVagaPorId = async (id: number): Promise<any> => {
     try {
       const vaga = await connection
@@ -180,6 +194,30 @@ export class AdminData {
         );
 
       return examesCriados;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  patchNoticia = async (id: number, valores: any[]): Promise<noticia[]> => {
+    try {
+      const noticiaAtualizada = await connection("noticias")
+        .where("id_incremental", id)
+        .update(
+          {
+            noticia_id_fundacao: valores[0],
+            titulo: valores[1],
+            resumo: valores[2],
+            conteudo: valores[3],
+            data_publicacao: valores[4],
+            tags: valores[5],
+            imagens: valores[6],
+            outros_links: valores[7],
+          },
+          ["*"],
+        );
+
+      return noticiaAtualizada;
     } catch (err: any) {
       throw new Error(err);
     }

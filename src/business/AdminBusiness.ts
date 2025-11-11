@@ -549,6 +549,115 @@ export class AdminBusiness {
     }
   };
 
+  executarLogicaPatchNoticia = async (
+    responseBuilder: ResponseBuilder<adminAPIretorno<noticia>>,
+    token: string,
+    noticia_values: any[], // [noticia_id_fundacao, titulo, resumo, conteudo, data_publicacao, tags, imagens, outros_links]
+    id_noticia: number,
+  ) => {
+    try {
+      const tokenFormatado = token.split("Bearer ")[1];
+
+      if (tokenFormatado === undefined) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, algo de errado esta no seu header de autorização",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const eValido = verificarToken(tokenFormatado);
+
+      if (!eValido) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, TOKEN incorreto ou expirado!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Validação de campos obrigatórios que não podem ser só espaços
+      const camposObrigatorios = [1, 3]; // titulo, conteudo
+      for (const idx of camposObrigatorios) {
+        if (
+          typeof noticia_values[idx] === "string" &&
+          noticia_values[idx].trim().length === 0
+        ) {
+          responseBuilder.adicionarCodigoStatus(
+            responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+          );
+          responseBuilder.adicionarMensagem(
+            "Parametros não pode incluir apenas espaços, e necessario algum valor",
+          );
+          responseBuilder.adicionarBody({ sucesso: false });
+          return;
+        }
+      }
+
+      // Validação do noticia_id_fundacao
+      const noticiaIdFundacao = Number(noticia_values[0]);
+      if (!Number.isInteger(noticiaIdFundacao) || noticiaIdFundacao <= 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'noticia_id_fundacao' deve ser um número inteiro positivo!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Validação da data_publicacao
+      const data = new Date(noticia_values[4]);
+      if (isNaN(data.getTime())) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'data_publicacao' deve ser uma data válida!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Verifica se a notícia existe
+      const noticiaExiste = await this.adminData.buscarNoticiaPorId(id_noticia);
+      if (!noticiaExiste) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro ao tentar encontrar notícia usando 'id' fornecido, verifique se essa notícia existe!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Atualiza a notícia
+      const noticiaPatch = await this.adminData.patchNoticia(
+        id_noticia,
+        noticia_values,
+      );
+
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_OK_CRIADO,
+      );
+      responseBuilder.adicionarBody({
+        sucesso: true,
+        total: 1,
+        data: noticiaPatch,
+      });
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
   executarLogicaPatchVaga = async (
     responseBuilder: ResponseBuilder<adminAPIretorno<vagasEmprego>>,
     token: string,
