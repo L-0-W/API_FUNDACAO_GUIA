@@ -401,4 +401,110 @@ export class AdminBusiness {
       throw new Error(err);
     }
   };
+
+  executarLogicaPatchVaga = async (
+    responseBuilder: ResponseBuilder<adminAPIretorno<vagasEmprego>>,
+    token: string,
+    vaga_values: any[], // [cargo, modalidade, cidade, horas, principais_atividades, beneficios, requisitos, data_publicacao, como_se_inscrever, tipo_vinculo, quantidade]
+    id_vaga: number,
+  ) => {
+    try {
+      const tokenFormatado = token.split("Bearer ")[1];
+
+      if (tokenFormatado === undefined) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, algo de errado esta no seu header de autorização",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const eValido = verificarToken(tokenFormatado);
+
+      if (!eValido) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, TOKEN incorreto ou expirado!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Validação de campos obrigatórios que não podem ser só espaços
+      const camposObrigatorios = [0, 1, 2, 9]; // cargo, modalidade, cidade, tipo_vinculo
+      for (const idx of camposObrigatorios) {
+        if (
+          typeof vaga_values[idx] === "string" &&
+          vaga_values[idx].trim().length === 0
+        ) {
+          responseBuilder.adicionarCodigoStatus(
+            responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+          );
+          responseBuilder.adicionarMensagem(
+            "Parametros não pode incluir apenas espaços, e necessario algum valor",
+          );
+          responseBuilder.adicionarBody({ sucesso: false });
+          return;
+        }
+      }
+
+      // Validação da quantidade
+      const quantidade = Number(vaga_values[10]);
+      if (!Number.isInteger(quantidade) || quantidade <= 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'quantidade' deve ser um número inteiro positivo!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Validação da data_publicacao
+      const data = new Date(vaga_values[7]);
+      if (isNaN(data.getTime())) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'data_publicacao' deve ser uma data válida!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Verifica se a vaga existe
+      const vagaExiste = await this.adminData.buscarVagaPorId(id_vaga);
+      if (!vagaExiste) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro ao tentar encontrar vaga usando 'id' fornecido, verifique se essa vaga existe!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Atualiza a vaga
+      const vagaPatch = await this.adminData.patchVaga(id_vaga, vaga_values);
+
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_OK_CRIADO,
+      );
+      responseBuilder.adicionarBody({
+        sucesso: true,
+        total: 1,
+        data: vagaPatch,
+      });
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
 }

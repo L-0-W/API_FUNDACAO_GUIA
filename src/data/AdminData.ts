@@ -18,13 +18,27 @@ export class AdminData {
 
   buscarExamePorId = async (id: number): Promise<any> => {
     try {
-      const local = await connection
+      const exame = await connection
         .select("id")
         .from("exames")
         .where("id_incremental", id)
         .first();
 
-      return local;
+      return exame;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  buscarVagaPorId = async (id: number): Promise<any> => {
+    try {
+      const vaga = await connection
+        .select("id")
+        .from("vagas")
+        .where("id_incremental", id)
+        .first();
+
+      return vaga;
     } catch (err: any) {
       throw new Error(err);
     }
@@ -122,6 +136,33 @@ export class AdminData {
         );
 
       return examesCriados;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  patchVaga = async (id: number, valores: any[]): Promise<vagasEmprego[]> => {
+    try {
+      const vagaAtualizada = await connection("vagas")
+        .where("id_incremental", id)
+        .update(
+          {
+            cargo: valores[0],
+            modalidade: valores[1],
+            cidade: valores[2],
+            horas: valores[3],
+            principais_atividades: valores[4],
+            beneficios: valores[5],
+            requisitos: valores[6],
+            data_publicacao: valores[7],
+            como_se_inscrever: valores[8],
+            tipo_vinculo: valores[9],
+            quantidade: valores[10],
+          },
+          ["*"],
+        );
+
+      return vagaAtualizada;
     } catch (err: any) {
       throw new Error(err);
     }
