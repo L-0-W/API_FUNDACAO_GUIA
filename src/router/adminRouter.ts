@@ -7,3 +7,5 @@ const adminController = new AdminController();
 adminRouter.delete("/exame/:id", adminController.deletarExamePorId);
 adminRouter.post("/exame", adminController.criarExame);
 adminRouter.patch("/exame/:id", adminController.patchExame);
+
+adminRouter.delete("/vagas/:id", adminController.deletarVagasPorId);

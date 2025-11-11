@@ -56,6 +56,52 @@ export class AdminController {
     }
   };
 
+  deletarVagasPorId = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<adminAPIretorno<exame>>();
+
+    try {
+      const id = Number(req.params.id);
+      const jwt_auth = req.headers.authorization;
+
+      if (isNaN(id) || !Number.isInteger(id)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem("Id esta incorreto..");
+        responseBuilder.adicionarBody({ sucesso: false });
+
+        responseBuilder.construir(res);
+
+        return;
+      }
+
+      if (!jwt_auth) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem("Token necessario não existe");
+        responseBuilder.adicionarBody({ sucesso: false });
+
+        responseBuilder.construir(res);
+
+        return;
+      }
+
+      await this.adminBusiness.deletarVagasPorId(id, jwt_auth, responseBuilder);
+
+      responseBuilder.construir(res);
+    } catch (err: any) {
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
+      );
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+
+      responseBuilder.construir(res);
+    }
+  };
+
   criarExame = async (req: Request, res: Response) => {
     const responseBuilder = new ResponseBuilder<adminAPIretorno<exame>>();
 
