@@ -75,6 +75,24 @@ export type noticia = {
   atualizado_em?: number | string;
 };
 
+export enum statusEvento {
+  programado,
+  em_andamento,
+  concluido,
+  cancelado,
+}
+
+export type eventos = {
+  id?: number;
+  titulo?: string;
+  descricao?: string;
+  data_inicio?: number | string;
+  data_fim?: number | string;
+  status?: statusEvento;
+  publico_alvo?: string;
+  quantidade?: number;
+};
+
 export type exame = {
   id: number;
   nome: string;

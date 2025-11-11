@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { exame, noticia, vagasEmprego } from "../types/entidades";
+import { evento, exame, noticia, vagasEmprego } from "../types/entidades";
 
 export class AdminData {
   buscarLocalPorId = async (id: number): Promise<any> => {
@@ -44,6 +44,20 @@ export class AdminData {
     }
   };
 
+  buscarEventosPorId = async (id: number): Promise<any> => {
+    try {
+      const eventos = await connection
+        .select("id")
+        .from("eventos")
+        .where("id_incremental", id)
+        .first();
+
+      return eventos;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
   buscarVagaPorId = async (id: number): Promise<any> => {
     try {
       const vaga = await connection
@@ -53,6 +67,26 @@ export class AdminData {
         .first();
 
       return vaga;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  criarEvento = async (valores: any[]): Promise<evento[]> => {
+    try {
+      const [eventoCriado] = await connection("eventos").insert(
+        {
+          titulo: valores[0],
+          descricao: valores[1],
+          data_inicio: valores[2],
+          data_fim: valores[3],
+          status: valores[4],
+          publico_alvo: valores[5],
+          quantidade: valores[6],
+        },
+        ["*"],
+      );
+      return [eventoCriado];
     } catch (err: any) {
       throw new Error(err);
     }
@@ -71,6 +105,26 @@ export class AdminData {
       }
 
       await connection("exames").where({ id_incremental: id }).del();
+
+      return 1;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  deletarEventoPorId = async (id: number): Promise<number> => {
+    try {
+      const eventos = await connection
+        .select("id")
+        .from("eventos")
+        .where({ id_incremental: id })
+        .first();
+
+      if (!eventos) {
+        return 0;
+      }
+
+      await connection("eventos").where({ id_incremental: id }).del();
 
       return 1;
     } catch (err: any) {

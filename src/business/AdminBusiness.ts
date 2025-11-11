@@ -5,7 +5,7 @@ import {
   adminAPIretorno,
   localizacaoAPIretorno,
 } from "../types/apiRetornoTipos";
-import { exame, noticia, vagasEmprego } from "../types/entidades";
+import { evento, exame, noticia, vagasEmprego } from "../types/entidades";
 import { X509Certificate } from "node:crypto";
 import e from "cors";
 import { describe } from "node:test";
@@ -63,6 +63,62 @@ export class AdminBusiness {
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
       responseBuilder.adicionarMensagem("Exame deletado com sucesso");
+      responseBuilder.adicionarBody({ sucesso: true, total: 1 });
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  deletarEventosPorId = async (
+    id: number,
+    token: string,
+    responseBuilder: ResponseBuilder<adminAPIretorno<exame>>,
+  ) => {
+    try {
+      const tokenFormatado = token.split("Bearer ")[1];
+
+      if (tokenFormatado == undefined) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+        );
+
+        responseBuilder.adicionarMensagem("Erro ao tentar formatar token...");
+        responseBuilder.adicionarBody({ sucesso: false });
+
+        return;
+      }
+
+      const eValido = verificarToken(tokenFormatado);
+
+      console.log(eValido);
+
+      if (!eValido) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_NAO_AUTORIZADO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "O token recebido esta expirado ou não e valido...",
+        );
+
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const resultado = await this.adminData.deletarExamePorId(id);
+
+      if (resultado == 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_VAZIO,
+        );
+
+        responseBuilder.adicionarMensagem("Evento não econtrado...");
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
+      responseBuilder.adicionarMensagem("Evento deletado com sucesso");
       responseBuilder.adicionarBody({ sucesso: true, total: 1 });
     } catch (err: any) {
       throw new Error(err);
@@ -358,6 +414,94 @@ export class AdminBusiness {
         sucesso: true,
         total: 1,
         data: noticiasCriadas,
+      });
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  executarLogicaCriacaoEvento = async (
+    responseBuilder: ResponseBuilder<adminAPIretorno<evento>>,
+    token: string,
+    evento_values: any[], // [titulo, descricao, data_inicio, data_fim, status, publico_alvo, quantidade]
+  ) => {
+    try {
+      const tokenFormatado = token.split("Bearer ")[1];
+      if (!tokenFormatado) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, algo de errado esta no seu header de autorização",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      if (!verificarToken(tokenFormatado)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, TOKEN incorreto ou expirado!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // campos obrigatórios não podem ser só espaços
+      const obr = [0, 2, 3, 4, 6]; // titulo, data_inicio, data_fim, status, quantidade
+      for (const i of obr) {
+        if (
+          typeof evento_values[i] === "string" &&
+          evento_values[i].trim().length === 0
+        ) {
+          responseBuilder.adicionarCodigoStatus(
+            responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+          );
+          responseBuilder.adicionarMensagem(
+            "Parametros não pode incluir apenas espaços, e necessario algum valor",
+          );
+          responseBuilder.adicionarBody({ sucesso: false });
+          return;
+        }
+      }
+
+      // datas válidas
+      const dtInicio = new Date(evento_values[2]);
+      const dtFim = new Date(evento_values[3]);
+      if (isNaN(dtInicio.getTime()) || isNaN(dtFim.getTime())) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'data_inicio' e 'data_fim' devem ser datas válidas!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const qtd = Number(evento_values[6]);
+      if (!Number.isInteger(qtd) || qtd <= 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'quantidade' deve ser um número inteiro positivo!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const eventosCriados = await this.adminData.criarEvento(evento_values);
+
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_OK_CRIADO,
+      );
+      responseBuilder.adicionarBody({
+        sucesso: true,
+        total: 1,
+        data: eventosCriados,
       });
     } catch (err: any) {
       throw new Error(err);

@@ -5,7 +5,7 @@ import {
   adminAPIretorno,
   localizacaoAPIretorno,
 } from "../types/apiRetornoTipos";
-import { exame, noticia, vagasEmprego } from "../types/entidades";
+import { evento, exame, noticia, vagasEmprego } from "../types/entidades";
 
 export class AdminController {
   private adminBusiness = new AdminBusiness();
@@ -103,6 +103,52 @@ export class AdminController {
   };
 
   deletarNoticiaPorId = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<adminAPIretorno<exame>>();
+
+    try {
+      const id = Number(req.params.id);
+      const jwt_auth = req.headers.authorization;
+
+      if (isNaN(id) || !Number.isInteger(id)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem("Id esta incorreto..");
+        responseBuilder.adicionarBody({ sucesso: false });
+
+        responseBuilder.construir(res);
+
+        return;
+      }
+
+      if (!jwt_auth) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem("Token necessario não existe");
+        responseBuilder.adicionarBody({ sucesso: false });
+
+        responseBuilder.construir(res);
+
+        return;
+      }
+
+      await this.adminBusiness.deletarExamePorId(id, jwt_auth, responseBuilder);
+
+      responseBuilder.construir(res);
+    } catch (err: any) {
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
+      );
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+
+      responseBuilder.construir(res);
+    }
+  };
+
+  deletarEventosPorId = async (req: Request, res: Response) => {
     const responseBuilder = new ResponseBuilder<adminAPIretorno<exame>>();
 
     try {
@@ -394,6 +440,97 @@ export class AdminController {
           tags,
           imagens,
           outros_links,
+        ],
+      );
+
+      responseBuilder.construir(res);
+    } catch (err: any) {
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
+      );
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      responseBuilder.construir(res);
+    }
+  };
+
+  criarEvento = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<adminAPIretorno<evento>>();
+
+    try {
+      const {
+        titulo,
+        descricao,
+        data_inicio,
+        data_fim,
+        status,
+        publico_alvo,
+        quantidade,
+      } = req.body;
+      const jwt_auth = req.headers.authorization;
+
+      // obrigatórios
+      if (!titulo || !data_inicio || !data_fim || !status || !quantidade) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, campos obrigatórios: 'titulo', 'data_inicio', 'data_fim', 'status' e 'quantidade' devem ser fornecidos!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      // enum status
+      if (
+        !["programado", "em_andamento", "concluido", "cancelado"].includes(
+          status,
+        )
+      ) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'status' deve ser um dos valores: 'programado', 'em_andamento', 'concluido' ou 'cancelado'!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      // quantidade > 0
+      if (isNaN(Number(quantidade)) || Number(quantidade) <= 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'quantidade' deve ser um número inteiro positivo!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (!jwt_auth) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, TOKEN de verificação admin não foi encontrado!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        responseBuilder.construir(res);
+        return;
+      }
+
+      await this.adminBusiness.executarLogicaCriacaoEvento(
+        responseBuilder,
+        jwt_auth,
+        [
+          titulo,
+          descricao,
+          data_inicio,
+          data_fim,
+          status,
+          publico_alvo,
+          quantidade,
         ],
       );
 
