@@ -13,3 +13,4 @@ adminRouter.post("/vagas", adminController.criarVaga);
 adminRouter.patch("/vagas/:id", adminController.patchExame);
 
 adminRouter.delete("/noticias/:id", adminController.deletarNoticiaPorId);
+adminRouter.post("/noticias/:id", adminController.criarNoticias);

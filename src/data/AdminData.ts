@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { exame, vagasEmprego } from "../types/entidades";
+import { exame, noticia, vagasEmprego } from "../types/entidades";
 
 export class AdminData {
   buscarLocalPorId = async (id: number): Promise<any> => {
@@ -114,6 +114,30 @@ export class AdminData {
         .into("exames");
 
       return examesCriados;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  criarNoticia = async (valores: any[]): Promise<noticia[]> => {
+    try {
+      const noticiasCriadas = await connection
+        .insert(
+          {
+            noticia_id_fundacao: valores[0],
+            titulo: valores[1],
+            resumo: valores[2],
+            conteudo: valores[3],
+            data_publicacao: valores[4],
+            tags: valores[5],
+            imagens: valores[6],
+            outros_links: valores[7],
+          },
+          ["*"],
+        )
+        .into("noticias");
+
+      return noticiasCriadas;
     } catch (err: any) {
       throw new Error(err);
     }
