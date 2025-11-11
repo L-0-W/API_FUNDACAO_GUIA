@@ -835,4 +835,103 @@ export class AdminController {
       responseBuilder.construir(res);
     }
   };
+
+  patchEvento = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<adminAPIretorno<evento>>();
+
+    try {
+      const {
+        titulo,
+        descricao,
+        data_inicio,
+        data_fim,
+        status,
+        publico_alvo,
+        quantidade,
+      } = req.body;
+      const id = Number(req.params.id);
+      const jwt_auth = req.headers.authorization;
+
+      if (!Number.isInteger(id)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem("Erro, parâmetro id está incorreto");
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (!titulo || !data_inicio || !data_fim || !status || !quantidade) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, campos obrigatórios: 'titulo', 'data_inicio', 'data_fim', 'status' e 'quantidade' devem ser fornecidos!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (
+        !["programado", "em_andamento", "concluido", "cancelado"].includes(
+          status,
+        )
+      ) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'status' deve ser um dos valores: 'programado', 'em_andamento', 'concluido' ou 'cancelado'!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (isNaN(Number(quantidade)) || Number(quantidade) <= 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'quantidade' deve ser um número inteiro positivo!",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (!jwt_auth) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, TOKEN de verificação admin não foi encontrado!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        responseBuilder.construir(res);
+        return;
+      }
+
+      await this.adminBusiness.executarLogicaPatchEvento(
+        responseBuilder,
+        jwt_auth,
+        [
+          titulo,
+          descricao,
+          data_inicio,
+          data_fim,
+          status,
+          publico_alvo,
+          quantidade,
+        ],
+        id,
+      );
+
+      responseBuilder.construir(res);
+    } catch (err: any) {
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
+      );
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      responseBuilder.construir(res);
+    }
+  };
 }

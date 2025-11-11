@@ -907,4 +907,105 @@ export class AdminBusiness {
       throw new Error(err);
     }
   };
+
+  executarLogicaPatchEvento = async (
+    responseBuilder: ResponseBuilder<adminAPIretorno<evento>>,
+    token: string,
+    evento_values: any[],
+    id_evento: number,
+  ) => {
+    try {
+      const tokenFormatado = token.split("Bearer ")[1];
+      if (!tokenFormatado) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, algo de errado esta no seu header de autorização",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      if (!verificarToken(tokenFormatado)) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, TOKEN incorreto ou expirado!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // campos obrigatórios não podem ser só espaços
+      const obr = [0, 2, 3, 4, 6];
+      for (const i of obr) {
+        if (
+          typeof evento_values[i] === "string" &&
+          evento_values[i].trim().length === 0
+        ) {
+          responseBuilder.adicionarCodigoStatus(
+            responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+          );
+          responseBuilder.adicionarMensagem(
+            "Parametros não pode incluir apenas espaços, e necessario algum valor",
+          );
+          responseBuilder.adicionarBody({ sucesso: false });
+          return;
+        }
+      }
+
+      const dtInicio = new Date(evento_values[2]);
+      const dtFim = new Date(evento_values[3]);
+      if (isNaN(dtInicio.getTime()) || isNaN(dtFim.getTime())) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'data_inicio' e 'data_fim' devem ser datas válidas!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const qtd = Number(evento_values[6]);
+      if (!Number.isInteger(qtd) || qtd <= 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'quantidade' deve ser um número inteiro positivo!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const eventoExiste = await this.adminData.buscarEventoPorId(id_evento);
+      if (!eventoExiste) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro ao tentar encontrar evento usando 'id' fornecido, verifique se esse evento existe!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const eventoPatch = await this.adminData.patchEvento(
+        id_evento,
+        evento_values,
+      );
+
+      responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
+      responseBuilder.adicionarBody({
+        sucesso: true,
+        total: 1,
+        data: eventoPatch,
+      });
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
 }

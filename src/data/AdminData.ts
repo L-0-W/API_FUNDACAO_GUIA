@@ -44,7 +44,7 @@ export class AdminData {
     }
   };
 
-  buscarEventosPorId = async (id: number): Promise<any> => {
+  buscarEventoPorId = async (id: number): Promise<any> => {
     try {
       const eventos = await connection
         .select("id")
@@ -299,6 +299,28 @@ export class AdminData {
         );
 
       return vagaAtualizada;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  patchEvento = async (id: number, valores: any[]): Promise<evento[]> => {
+    try {
+      const [eventoAtualizado] = await connection("eventos")
+        .where("id_incremental", id)
+        .update(
+          {
+            titulo: valores[0],
+            descricao: valores[1],
+            data_inicio: valores[2],
+            data_fim: valores[3],
+            status: valores[4],
+            publico_alvo: valores[5],
+            quantidade: valores[6],
+          },
+          ["*"],
+        );
+      return [eventoAtualizado];
     } catch (err: any) {
       throw new Error(err);
     }
