@@ -56,7 +56,27 @@ export class AdminData {
         return 0;
       }
 
-      await connection("exames").where({ id: id }).del();
+      await connection("exames").where({ id_incremental: id }).del();
+
+      return 1;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  deletarNoticiaPorId = async (id: number): Promise<number> => {
+    try {
+      const noticia = await connection
+        .select("id")
+        .from("noticias")
+        .where({ id_incremental: id })
+        .first();
+
+      if (!noticia) {
+        return 0;
+      }
+
+      await connection("noticias").where({ id_incremental: id }).del();
 
       return 1;
     } catch (err: any) {
@@ -66,17 +86,17 @@ export class AdminData {
 
   deletarVagaPorId = async (id: number): Promise<number> => {
     try {
-      const exame = await connection
+      const vaga = await connection
         .select("id")
         .from("vagas")
         .where({ id_incremental: id })
         .first();
 
-      if (!exame) {
+      if (!vaga) {
         return 0;
       }
 
-      await connection("exames").where({ id: id }).del();
+      await connection("vagas").where({ id_incremental: id }).del();
 
       return 1;
     } catch (err: any) {
