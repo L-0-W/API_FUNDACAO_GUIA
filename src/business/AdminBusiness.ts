@@ -5,7 +5,7 @@ import {
   adminAPIretorno,
   localizacaoAPIretorno,
 } from "../types/apiRetornoTipos";
-import { exame } from "../types/entidades";
+import { exame, vagasEmprego } from "../types/entidades";
 import { X509Certificate } from "node:crypto";
 import e from "cors";
 import { describe } from "node:test";
@@ -72,7 +72,7 @@ export class AdminBusiness {
   deletarVagasPorId = async (
     id: number,
     token: string,
-    responseBuilder: ResponseBuilder<adminAPIretorno<exame>>,
+    responseBuilder: ResponseBuilder<adminAPIretorno<vagasEmprego>>,
   ) => {
     try {
       const tokenFormatado = token.split("Bearer ")[1];
@@ -211,6 +211,98 @@ export class AdminBusiness {
         sucesso: true,
         total: 1,
         data: examesCriados,
+      });
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  executarLogicaCriacaoVaga = async (
+    responseBuilder: ResponseBuilder<adminAPIretorno<vagasEmprego>>,
+    token: string,
+    vaga_values: any[], // [cargo, modalidade, cidade, horas, principais_atividades, beneficios, requisitos, data_publicacao, como_se_inscrever, tipo_vinculo, quantidade]
+  ) => {
+    try {
+      const tokenFormatado = token.split("Bearer ")[1];
+
+      if (tokenFormatado === undefined) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, algo de errado esta no seu header de autorização",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      const eValido = verificarToken(tokenFormatado);
+
+      if (!eValido) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "TOKEN não autorizado, TOKEN incorreto ou expirado!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Validação de campos vazios ou só com espaços
+      const camposObrigatorios = [0, 1, 2, 9]; // cargo, modalidade, cidade, tipo_vinculo
+      for (const idx of camposObrigatorios) {
+        if (
+          typeof vaga_values[idx] === "string" &&
+          vaga_values[idx].trim().length === 0
+        ) {
+          responseBuilder.adicionarCodigoStatus(
+            responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+          );
+          responseBuilder.adicionarMensagem(
+            "Parametros não pode incluir apenas espaços, e necessario algum valor",
+          );
+          responseBuilder.adicionarBody({ sucesso: false });
+          return;
+        }
+      }
+
+      // Validação da quantidade
+      const quantidade = Number(vaga_values[10]);
+      if (!Number.isInteger(quantidade) || quantidade <= 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'quantidade' deve ser um número inteiro positivo!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Validação da data_publicacao
+      const data = new Date(vaga_values[7]);
+      if (isNaN(data.getTime())) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+        responseBuilder.adicionarMensagem(
+          "Erro, 'data_publicacao' deve ser uma data válida!",
+        );
+        responseBuilder.adicionarBody({ sucesso: false });
+        return;
+      }
+
+      // Criar a vaga
+      const vagaCriada = await this.adminData.criarVaga(vaga_values);
+
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_OK_CRIADO,
+      );
+      responseBuilder.adicionarBody({
+        sucesso: true,
+        total: 1,
+        data: vagaCriada,
       });
     } catch (err: any) {
       throw new Error(err);
