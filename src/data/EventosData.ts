@@ -1,6 +1,6 @@
 import { get } from "node:https";
 import { connection } from "../dbConnection";
-import { evento, filtragemEventos } from "../types/tiposComuns";
+import { filtragemEventos, filtragemEventosStatus } from "../types/entidades";
 
 export class EventosData {
   buscarTodosEventos = async (): Promise<evento[]> => {
