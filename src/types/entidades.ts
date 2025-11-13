@@ -70,6 +70,38 @@ export type params_noticia = {
   tags?: string[] | string;
 };
 
+export type noticia = {
+  id?: number;
+  noticia_id_fundacao?: number;
+  titulo?: string;
+  resumo?: string | null;
+  conteudo?: string;
+  data_publicacao?: number | string;
+  tags?: string | null;
+  imagens?: string | null;
+  outros_links?: string | null;
+  criado_em?: number | string;
+  atualizado_em?: number | string;
+};
+
+export enum statusEvento {
+  programado,
+  em_andamento,
+  concluido,
+  cancelado,
+}
+
+export type eventos = {
+  id?: number;
+  titulo?: string;
+  descricao?: string;
+  data_inicio?: number | string;
+  data_fim?: number | string;
+  status?: statusEvento;
+  publico_alvo?: string;
+  quantidade?: number;
+};
+
 export type exame = {
   id: number;
   nome: string;

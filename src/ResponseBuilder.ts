@@ -18,6 +18,7 @@ export class ResponseBuilder<T> {
   public readonly STATUS_CODE_SERVER_ERROR: number = 500;
   public readonly STATUS_CODE_NAO_AUTORIZADO: number = 401;
   public readonly STATUS_CODE_ERRO_SEMANTICO: number = 422;
+  public readonly STATUS_CODE_OK_CRIADO: number = 201;
 
   // Objeto de resposta interno que armazena os dados da resposta
   // (status, body, mensagem, etc.) antes de ser enviado ao cliente.
