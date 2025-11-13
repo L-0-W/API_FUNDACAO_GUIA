@@ -351,7 +351,7 @@ export class AdminBusiness {
           "TOKEN não autorizado, algo de errado esta no seu header de autorização",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eValido = verificarToken(tokenFormatado);
@@ -364,7 +364,7 @@ export class AdminBusiness {
           "TOKEN não autorizado, TOKEN incorreto ou expirado!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação de campos obrigatórios que não podem ser só espaços
@@ -381,7 +381,7 @@ export class AdminBusiness {
             "Parametros não pode incluir apenas espaços, e necessario algum valor",
           );
           responseBuilder.adicionarBody({ sucesso: false });
-          return;
+          throw new Error(catchErros.CLIENTE);
         }
       }
 
@@ -395,7 +395,7 @@ export class AdminBusiness {
           "Erro, 'noticia_id_fundacao' deve ser um número inteiro positivo!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação da data_publicacao
@@ -408,7 +408,7 @@ export class AdminBusiness {
           "Erro, 'data_publicacao' deve ser uma data válida!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const noticiasCriadas = await this.adminData.criarNoticia(noticia_values);
@@ -441,7 +441,7 @@ export class AdminBusiness {
           "TOKEN não autorizado, algo de errado esta no seu header de autorização",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (!verificarToken(tokenFormatado)) {
@@ -452,7 +452,7 @@ export class AdminBusiness {
           "TOKEN não autorizado, TOKEN incorreto ou expirado!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // campos obrigatórios não podem ser só espaços
@@ -469,7 +469,7 @@ export class AdminBusiness {
             "Parametros não pode incluir apenas espaços, e necessario algum valor",
           );
           responseBuilder.adicionarBody({ sucesso: false });
-          return;
+          throw new Error(catchErros.CLIENTE);
         }
       }
 
@@ -484,7 +484,7 @@ export class AdminBusiness {
           "Erro, 'data_inicio' e 'data_fim' devem ser datas válidas!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const qtd = Number(evento_values[6]);
@@ -496,7 +496,7 @@ export class AdminBusiness {
           "Erro, 'quantidade' deve ser um número inteiro positivo!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eventosCriados = await this.adminData.criarEvento(evento_values);
