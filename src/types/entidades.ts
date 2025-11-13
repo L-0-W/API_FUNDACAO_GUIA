@@ -125,3 +125,49 @@ export type vagasEmprego = {
   como_se_inscrever?: string;
   tipo_vinculo?: vagasVinculo;
 };
+
+//--------------- CAMILY
+
+export enum filtragemEventosStatus {
+  Concluido = "concluido",
+  Em_Andamento = "em_andamento",
+  Encerrado = "encerrado",
+  Cancelado = "cancelado",
+  Vazio = "",
+}
+
+export type filtragemEventos {
+  status?: filtragemEventosStatus | string;
+  tags?: string | string[];
+  dias?: number;
+}
+
+export type local {
+  nome?: string;
+  bloco?: string;
+  setor?: string;
+  andar?: string;
+  coordenada?: string;
+  referencias?: {
+    bloco: {
+      imagem: string[];
+      descricao: string[];
+    };
+    setor: {
+      imagem: string[];
+      descricao: string[];
+    };
+  };
+}
+
+export type evento {
+  id?: number;
+  titulo?: string;
+  descricao?: string;
+  data_inicio?: number;
+  data_fim?: number;
+  status?: string;
+  local?: local;
+  publico_alvo?: string;
+}
+
