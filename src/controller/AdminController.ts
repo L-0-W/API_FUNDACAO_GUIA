@@ -295,8 +295,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, os campos obrigatórios 'cargo', 'modalidade', 'cidade', 'data_publicacao', 'tipo_vinculo' e 'quantidade' devem ser fornecidos!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação do enum modalidade
@@ -307,8 +306,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, 'modalidade' deve ser um dos valores: 'PRESENCIAL', 'HOME-OFFICE' ou 'VAZIO'!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação do enum tipo_vinculo
@@ -319,8 +317,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, 'tipo_vinculo' deve ser um dos valores: 'CLT', 'PJ', 'ESTAGIO' ou 'VAZIO'!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação da quantidade
@@ -331,8 +328,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, 'quantidade' deve ser um número inteiro positivo!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (!jwt_auth) {
@@ -343,8 +339,7 @@ export class AdminController {
           "Erro, TOKEN de verificação admin não foi encontrado!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       await this.adminBusiness.executarLogicaCriacaoVaga(
@@ -367,11 +362,16 @@ export class AdminController {
 
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+      if (err.message == catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+
+        responseBuilder.construir(res);
+      }
     }
   };
 
@@ -400,8 +400,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, todos os campos obrigatórios: 'noticia_id_fundacao', 'titulo', 'conteudo' e 'data_publicacao' devem ser fornecidos!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação do noticia_id_fundacao
@@ -415,8 +414,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, 'noticia_id_fundacao' deve ser um número inteiro positivo!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação da data_publicacao
@@ -428,8 +426,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, 'data_publicacao' deve ser uma data válida!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (!jwt_auth) {
@@ -440,8 +437,7 @@ export class AdminController {
           "Erro, TOKEN de verificação admin não foi encontrado!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       await this.adminBusiness.executarLogicaCriacaoNoticia(
@@ -461,11 +457,15 @@ export class AdminController {
 
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+      if (err.message == catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+        responseBuilder.construir(res);
+      }
     }
   };
 
@@ -492,8 +492,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, campos obrigatórios: 'titulo', 'data_inicio', 'data_fim', 'status' e 'quantidade' devem ser fornecidos!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // enum status
@@ -508,8 +507,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, 'status' deve ser um dos valores: 'programado', 'em_andamento', 'concluido' ou 'cancelado'!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // quantidade > 0
@@ -520,8 +518,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, 'quantidade' deve ser um número inteiro positivo!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (!jwt_auth) {
@@ -532,8 +529,7 @@ export class AdminController {
           "Erro, TOKEN de verificação admin não foi encontrado!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       await this.adminBusiness.executarLogicaCriacaoEvento(
@@ -552,11 +548,15 @@ export class AdminController {
 
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+      if (err.message == catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+        responseBuilder.construir(res);
+      }
     }
   };
 
