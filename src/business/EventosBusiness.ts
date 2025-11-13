@@ -55,7 +55,7 @@ export class EventosBusiness {
         );
         responseBuilder.adicionarBody({ eventos: [evento] });
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);

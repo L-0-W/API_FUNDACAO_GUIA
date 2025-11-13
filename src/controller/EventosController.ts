@@ -136,20 +136,23 @@ export class EventosController {
           "O parametro 'id' precisa ser um numero inteiro!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       await this.eventosBusiness.obterEventoPorId(eventoId, responseBuilder);
 
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message == catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+        responseBuilder.construir(res);
+      }
     }
   };
 }
