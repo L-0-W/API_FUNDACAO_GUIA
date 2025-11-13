@@ -1,6 +1,6 @@
 import { LoginData } from "../data/LoginData";
 import { ResponseBuilder } from "../ResponseBuilder";
-import { admin } from "../types/entidades";
+import { admin, catchErros } from "../types/entidades";
 
 import jwt from "jsonwebtoken";
 import argon2 from "argon2";
@@ -35,7 +35,7 @@ export class LoginBusiness {
 
         responseBuilder.adicionarMensagem(`A senha ou email esta incorreto...`);
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       console.log("User existe");
@@ -53,7 +53,7 @@ export class LoginBusiness {
 
         responseBuilder.adicionarMensagem(`A senha ou email esta incorreto...`);
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const token = jwt.sign(

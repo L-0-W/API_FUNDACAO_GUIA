@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { LoginBusiness } from "../business/LoginBusiness";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
+import { catchErros } from "../types/entidades";
 
 export class LoginController {
   private loginBusiness = new LoginBusiness();
@@ -19,9 +20,7 @@ export class LoginController {
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
-        responseBuilder.construir(res);
-
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (email.trim().length <= 0 || senha.trim().length <= 0) {
@@ -31,9 +30,7 @@ export class LoginController {
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
-        responseBuilder.construir(res);
-
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       await this.loginBusiness.verificarLoginParametros(
@@ -44,12 +41,16 @@ export class LoginController {
 
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message === catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+        responseBuilder.construir(res);
+      }
     }
   };
 }
