@@ -38,14 +38,13 @@ export type referencias = {
   setor: referencia;
 };
 
-export type evento = {
-  id?: number;
-  titulo?: string;
-  descricao?: string;
-  data_inicio?: number;
-  data_fim?: number;
-  status?: string;
-  publico_alvo?: string;
+export type filtrosVaga = {
+  beneficios?: string[] | string;
+  cidade?: string;
+  cargo?: string;
+  modalidade?: string;
+  tipo_vinculo?: string;
+  recentes?: number;
 };
 
 export type noticia_DTO = {
@@ -63,7 +62,39 @@ export type params_noticia = {
   bloco?: string;
   setor?: string;
   exame?: string;
-  tags?: string[];
+  tags?: string[] | string;
+};
+
+export type noticia = {
+  id?: number;
+  noticia_id_fundacao?: number;
+  titulo?: string;
+  resumo?: string | null;
+  conteudo?: string;
+  data_publicacao?: number | string;
+  tags?: string | null;
+  imagens?: string | null;
+  outros_links?: string | null;
+  criado_em?: number | string;
+  atualizado_em?: number | string;
+};
+
+export enum statusEvento {
+  programado,
+  em_andamento,
+  concluido,
+  cancelado,
+}
+
+export type eventos = {
+  id?: number;
+  titulo?: string;
+  descricao?: string;
+  data_inicio?: number | string;
+  data_fim?: number | string;
+  status?: statusEvento;
+  publico_alvo?: string;
+  quantidade?: number;
 };
 
 export type exame = {
@@ -88,4 +119,49 @@ export type vagasEmprego = {
   status?: vagasStatus;
   como_se_inscrever?: string;
   tipo_vinculo?: vagasVinculo;
+};
+
+//--------------- CAMILY
+
+export enum filtragemEventosStatus {
+  Concluido = "concluido",
+  Em_Andamento = "em_andamento",
+  Encerrado = "encerrado",
+  Cancelado = "cancelado",
+  Vazio = "",
+}
+
+export type filtragemEventos = {
+  status?: filtragemEventosStatus | string;
+  tags?: string | string[];
+  dias?: number;
+};
+
+export type local = {
+  nome?: string;
+  bloco?: string;
+  setor?: string;
+  andar?: string;
+  coordenada?: string;
+  referencias?: {
+    bloco: {
+      imagem: string[];
+      descricao: string[];
+    };
+    setor: {
+      imagem: string[];
+      descricao: string[];
+    };
+  };
+};
+
+export type evento = {
+  id?: number;
+  titulo?: string;
+  descricao?: string;
+  data_inicio?: number;
+  data_fim?: number;
+  status?: string;
+  local?: local;
+  publico_alvo?: string;
 };

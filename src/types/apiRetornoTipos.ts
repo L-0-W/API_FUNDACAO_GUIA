@@ -17,10 +17,6 @@ export type localizacaoAPIretorno = {
   referencias?: referencias;
 };
 
-export type eventosAPIretorno = {
-  eventos?: evento[];
-};
-
 export type noticiaAPIretorno = {
   noticias?: noticia_DTO[];
 };
@@ -36,3 +32,17 @@ export type apiRetorno<T> = {
   total?: number;
   body?: T;
 };
+
+export type adminAPIretorno<T> = {
+  sucesso?: boolean;
+  data?: T[];
+  total?: number;
+  mensagem?: string;
+};
+
+//------------ Camily
+
+export type eventosAPIretorno = {
+  eventos?: evento[];
+};
+

@@ -41,6 +41,13 @@ export class NoticiaisData {
                 dias,
               ])
             : undefined;
+          this.andWhere(function () {
+            const tags = params.tags?.toString().split(",");
+
+            tags?.forEach((tag) => {
+              this.orWhereLike("tags", `%${tag}%`);
+            });
+          });
         });
     } catch (err: any) {
       throw new Error(err);
