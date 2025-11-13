@@ -6,6 +6,7 @@ import argon2 from "argon2";
 import { LIMIT_WORKER_THREADS } from "sqlite3";
 import { application } from "express";
 import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
+import { catchErros } from "../types/entidades";
 
 export class AdminBusiness {
   private adminData = new AdminData();
@@ -38,7 +39,8 @@ export class AdminBusiness {
         );
 
         responseBuilder.adicionarMensagem("Erro ao tentar formatar token...");
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eValido = this.verificarToken(tokenFormatado);
@@ -54,7 +56,7 @@ export class AdminBusiness {
           "O token recebido esta expirado ou não e valido...",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const resultado = await this.adminData.deletarExamePorId(id);
@@ -65,7 +67,8 @@ export class AdminBusiness {
         );
 
         responseBuilder.adicionarMensagem("Exame não econtrado...");
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
