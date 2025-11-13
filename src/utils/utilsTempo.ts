@@ -1,11 +1,20 @@
-export const transformarDataEmTimeStamp = (dias: number) => {
+export const criarDataNoFuturo = (diasFuturo: number) => {
   try {
     const hoje = Date.now();
-    const dataFuturaDias = hoje + dias * 24 * 60 * 60 * 1000;
-
-    console.log(dataFuturaDias);
+    const dataFuturaDias = hoje + diasFuturo * 24 * 60 * 60 * 1000;
 
     return dataFuturaDias;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
+
+export const criarDataNoPassado = (diasPassado: number) => {
+  try {
+    const hoje = Date.now();
+    const dataPassadoDias = hoje - diasPassado * 24 * 60 * 60 * 1000;
+
+    return dataPassadoDias;
   } catch (err: any) {
     throw new Error(err);
   }

@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { noticia_DTO, params_noticia } from "../types/tiposComuns";
+import { noticia_DTO, params_noticia } from "../types/entidades";
 
 export class NoticiaisData {
   buscarNoticiaDefault = async (): Promise<noticia_DTO[]> => {
@@ -41,6 +41,13 @@ export class NoticiaisData {
                 dias,
               ])
             : undefined;
+          this.andWhere(function () {
+            const tags = params.tags?.toString().split(",");
+
+            tags?.forEach((tag) => {
+              this.orWhereLike("tags", `%${tag}%`);
+            });
+          });
         });
     } catch (err: any) {
       throw new Error(err);

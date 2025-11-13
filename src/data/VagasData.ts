@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { vagasEmprego } from "../types/tiposComuns";
+import { filtrosVaga, vagasEmprego } from "../types/entidades";
 
 export class VagasData {
   buscarTodasVagas = async (): Promise<vagasEmprego[]> => {
@@ -20,6 +20,58 @@ export class VagasData {
         .first();
 
       return vaga;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  buscarVagaPorFiltro = async (
+    filtros_array: string[],
+    recentes?: number,
+  ): Promise<vagasEmprego[]> => {
+    try {
+      const vagas = await connection
+        .select("*")
+        .from("vagas")
+        .where((builder) => {
+          filtros_array.forEach((e) => {
+            const filtro = e.split(":");
+
+            if (filtro[0] === "cargo") {
+              builder.andWhereLike("cargo", `%${filtro[1]}%`);
+            }
+
+            if (filtro[0] === "cidade") {
+              builder.andWhereLike("cidade", filtro[1]);
+            }
+
+            if (filtro[0] === "modalidade") {
+              builder.andWhereLike("modalidade", filtro[1]);
+            }
+
+            if (filtro[0] === "tipo_vinculo") {
+              builder.andWhereLike("tipo_vinculo", filtro[1]);
+            }
+
+            if (filtro[0] === "recentes") {
+              builder.andWhere(function () {
+                this.where("data_publicacao", ">=", Number(filtro[1]));
+              });
+            }
+
+            if (filtro[0] === "beneficios") {
+              builder.andWhere(function () {
+                const beneficios = filtro[1]?.split(",");
+
+                beneficios?.forEach((bene) => {
+                  this.orWhereLike("beneficios", `%${bene}%`);
+                });
+              });
+            }
+          });
+        });
+
+      return vagas;
     } catch (err: any) {
       throw new Error(err);
     }

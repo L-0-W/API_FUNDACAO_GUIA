@@ -1,5 +1,5 @@
 import { connection } from "../dbConnection";
-import { bloco, exame, setor } from "../types/tiposComuns";
+import { bloco, exame, setor } from "../types/entidades";
 
 export class LocalizacaoData {
   buscarExames = async (exame: string): Promise<exame> => {
@@ -7,7 +7,7 @@ export class LocalizacaoData {
       const exames = await connection
         .select("*")
         .from("exames")
-        .where("nome", exame)
+        .whereLike("nome", exame)
         .first();
       return exames;
     } catch (err: any) {
@@ -19,10 +19,65 @@ export class LocalizacaoData {
     try {
       const setor = await connection()
         .select("*")
-        .from("locais")
+        .from("local")
         .where("id", setorId)
         .first();
       return setor;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  buscarExamesPorSetor = async (setorId: number): Promise<exame[]> => {
+    try {
+      const setor = await connection()
+        .select("*")
+        .from("exames")
+        .where("local_id", setorId);
+
+      return setor;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  buscarSetoresPorBloco = async (blocoId: number): Promise<setor[]> => {
+    try {
+      const setor = await connection()
+        .select("*")
+        .from("local")
+        .where("bloco_id", blocoId);
+
+      return setor;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  buscarSetor = async (setor: string): Promise<setor> => {
+    try {
+      const setorAchado = await connection()
+        .select("*")
+        .from("local")
+        .where("tipo", "setor")
+        .andWhereLike("nome", setor)
+        .first();
+
+      return setorAchado;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+
+  buscarBloco = async (bloco: string): Promise<bloco> => {
+    try {
+      const exames = await connection
+        .select("*")
+        .from("blocos")
+        .whereLike("nome", bloco)
+        .first();
+
+      return exames;
     } catch (err: any) {
       throw new Error(err);
     }
@@ -32,7 +87,7 @@ export class LocalizacaoData {
     try {
       const bloco = await connection()
         .select("*")
-        .from("bloco")
+        .from("blocos")
         .where("id", blocoId)
         .first();
 

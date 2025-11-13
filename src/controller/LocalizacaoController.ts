@@ -1,41 +1,86 @@
 import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { LocalizacaoBusiness } from "../business/LocalizacaoBusiness";
-import { localizacaoAPIretorno } from "../types/tiposRetorno";
+import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
 
 export class LocalizacaoController {
   private localizacaoBusiness = new LocalizacaoBusiness();
-  private responseBuilder = new ResponseBuilder<localizacaoAPIretorno>();
 
   buscarLocalizacaoPorParametros = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<localizacaoAPIretorno>();
+
     try {
-      const { exame } = req.query;
+      const { exame, setor, bloco } = req.query;
 
-      if (!exame || exame.toString().trim().length === 0) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_BAD_REQUEST,
+      console.log("Controller -> " + exame || setor);
+
+      if (
+        (!exame || exame.toString().trim().length === 0) &&
+        (!setor || setor.toString().trim().length === 0) &&
+        (!bloco || bloco.toString().trim().length === 0)
+      ) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
-        this.responseBuilder.adicionarMensagem(
-          "Parametro 'exame' esta incorreto, não existe ou invalido!",
+        responseBuilder.adicionarMensagem(
+          "Parametro 'exame', 'setor' e 'bloco'  esta incorreto, não existe ou invalido! e obrigatorio pelo menos 1 filtro de busca",
         );
-        this.responseBuilder.build(res);
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (exame?.toString().replaceAll("'", "").length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Parametro 'exame' precisa ter conteudo, não pode ter apenas characteres especiais",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (setor?.toString().replaceAll("'", "").length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Parametro 'setor' precisa ter conteudo, não pode ter apenas characteres especiais",
+        );
+        responseBuilder.construir(res);
+        return;
+      }
+
+      if (bloco?.toString().replaceAll("'", "").length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Parametro 'bloco' precisa ter conteudo, não pode ter apenas characteres especiais",
+        );
+        responseBuilder.construir(res);
         return;
       }
 
       await this.localizacaoBusiness.obterLocalizacaoPorParametros(
-        exame.toString(),
-        this.responseBuilder,
+        responseBuilder,
+        exame?.toString().replaceAll("'", ""),
+        setor?.toString().replaceAll("'", ""),
+        bloco?.toString().replaceAll("'", ""),
       );
 
-      this.responseBuilder.build(res);
+      responseBuilder.construir(res);
     } catch (err: any) {
-      this.responseBuilder.adicionarCodigoStatus(
-        this.responseBuilder.STATUS_CODE_SERVER_ERROR,
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
       );
 
-      this.responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      this.responseBuilder.build(res);
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      responseBuilder.construir(res);
     }
   };
 }

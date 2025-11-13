@@ -6,19 +6,20 @@ import { filtragemEventos, filtragemEventosStatus } from "../types/entidades";
 
 export class EventosController {
   private eventosBusiness = new EventosBusiness();
-  private responseBuilder = new ResponseBuilder<eventosAPIretorno>();
 
   buscarTodosEventos = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<eventosAPIretorno>();
+
     try {
-      await this.eventosBusiness.obterTodosEventos(this.responseBuilder);
-      this.responseBuilder.build(res);
+      await this.eventosBusiness.obterTodosEventos(responseBuilder);
+      responseBuilder.construir(res);
     } catch (err: any) {
-      this.responseBuilder.adicionarCodigoStatus(
-        this.responseBuilder.STATUS_CODE_SERVER_ERROR,
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
       );
 
-      this.responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      this.responseBuilder.build(res);
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      responseBuilder.construir(res);
     }
   };
 
@@ -110,35 +111,34 @@ export class EventosController {
   };
 
   pegarEventoPorId = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<eventosAPIretorno>();
+
     try {
       const eventoId = Number(req.params.id);
 
       if (isNaN(eventoId) || !Number.isInteger(eventoId)) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_BAD_REQUEST,
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
-        this.responseBuilder.adicionarMensagem(
+        responseBuilder.adicionarMensagem(
           "O parametro 'id' precisa ser um numero inteiro!",
         );
 
-        this.responseBuilder.build(res);
+        responseBuilder.construir(res);
         return;
       }
 
-      await this.eventosBusiness.obterEventoPorId(
-        eventoId,
-        this.responseBuilder,
-      );
+      await this.eventosBusiness.obterEventoPorId(eventoId, responseBuilder);
 
-      this.responseBuilder.build(res);
+      responseBuilder.construir(res);
     } catch (err: any) {
-      this.responseBuilder.adicionarCodigoStatus(
-        this.responseBuilder.STATUS_CODE_SERVER_ERROR,
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
       );
 
-      this.responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      this.responseBuilder.build(res);
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      responseBuilder.construir(res);
     }
   };
 }
