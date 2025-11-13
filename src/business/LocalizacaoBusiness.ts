@@ -1,6 +1,6 @@
 import { ResponseBuilder } from "../ResponseBuilder";
 import { LocalizacaoData } from "../data/LocalizacaoData";
-import { bloco, setor, exame } from "../types/entidades";
+import { bloco, setor, exame, catchErros } from "../types/entidades";
 import { localizacaoAPIretorno } from "../types/apiRetornoTipos";
 
 export class LocalizacaoBusiness {
@@ -25,7 +25,7 @@ export class LocalizacaoBusiness {
           "Não existe nehum setor/bloco com esse exame!",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const setor: setor = await this.localizacaoData.buscarSetorPorId(
@@ -41,7 +41,7 @@ export class LocalizacaoBusiness {
           "Erro ao tentar relacionar exame com setor..",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const bloco: bloco = await this.localizacaoData.buscarBlocoPorId(
@@ -56,6 +56,8 @@ export class LocalizacaoBusiness {
         responseBuilder.adicionarMensagem(
           "Erro ao tentar relacionar setor com bloco..",
         );
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
@@ -90,7 +92,7 @@ export class LocalizacaoBusiness {
           "Não existe nehum setor com esse nome!",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const exames: exame[] = await this.localizacaoData.buscarExamesPorSetor(
@@ -106,7 +108,7 @@ export class LocalizacaoBusiness {
           "Não foi achado nemhum exames para esse setor!",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       console.log(setor.bloco_id);
@@ -122,6 +124,8 @@ export class LocalizacaoBusiness {
         responseBuilder.adicionarMensagem(
           "Erro ao tentar relacionar setor com bloco..",
         );
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
@@ -156,7 +160,7 @@ export class LocalizacaoBusiness {
           "Não existe nehum bloco com esse nome!",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const setores: setor[] = await this.localizacaoData.buscarSetoresPorBloco(
@@ -173,7 +177,7 @@ export class LocalizacaoBusiness {
           "Não foi encontrado nemhum setor para esse bloco!",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       let exames: exame[] = [];
@@ -195,7 +199,7 @@ export class LocalizacaoBusiness {
           "Não foi achado nemhum exame para esses setores desse bloco!",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
@@ -230,7 +234,7 @@ export class LocalizacaoBusiness {
           "Erro ao formatar parametro 'exame', certifique-se que exame esta preenchido.",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (setor != undefined && setorFormatado?.length === 0) {
@@ -241,7 +245,7 @@ export class LocalizacaoBusiness {
           "Erro ao formatar parametro 'setor', certifique-se que setor esta preenchido.",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (bloco != undefined && blocoFormatado?.length === 0) {
@@ -252,7 +256,7 @@ export class LocalizacaoBusiness {
           "Erro ao formatar parametro 'bloco', certifique-se que bloco esta preenchido.",
         );
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       console.log(
@@ -266,14 +270,11 @@ export class LocalizacaoBusiness {
 
       if (exameFormatado) {
         await this.lidarBuscarExame(exameFormatado, responseBuilder);
-        return;
       } else if (setorFormatado) {
         await this.lidarBuscarSetor(setorFormatado, responseBuilder);
-        return;
       } else if (blocoFormatado) {
         console.log(blocoFormatado);
         await this.lidarBuscarBloco(blocoFormatado, responseBuilder);
-        return;
       }
 
       return;
