@@ -1,8 +1,8 @@
 import { toUnicode } from "node:punycode";
 import { EventosData } from "../data/EventosData";
 import { ResponseBuilder } from "../ResponseBuilder";
-import { filtragemEventos, filtragemEventosStatus } from "../types/tiposComuns";
-import { eventosAPIretorno } from "../types/tiposRetorno";
+import { eventosAPIretorno } from "../types/apiRetornoTipos";
+import { filtragemEventos, filtragemEventosStatus } from "../types/entidades";
 import { transformarDataEmTimeStamp } from "../utils/utilsTempo";
 
 export class EventosBusiness {
