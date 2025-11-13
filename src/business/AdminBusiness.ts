@@ -930,7 +930,7 @@ export class AdminBusiness {
           "TOKEN não autorizado, algo de errado esta no seu header de autorização",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (!verificarToken(tokenFormatado)) {
@@ -941,7 +941,7 @@ export class AdminBusiness {
           "TOKEN não autorizado, TOKEN incorreto ou expirado!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // campos obrigatórios não podem ser só espaços
@@ -958,7 +958,7 @@ export class AdminBusiness {
             "Parametros não pode incluir apenas espaços, e necessario algum valor",
           );
           responseBuilder.adicionarBody({ sucesso: false });
-          return;
+          throw new Error(catchErros.CLIENTE);
         }
       }
 
@@ -972,7 +972,7 @@ export class AdminBusiness {
           "Erro, 'data_inicio' e 'data_fim' devem ser datas válidas!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const qtd = Number(evento_values[6]);
@@ -984,7 +984,7 @@ export class AdminBusiness {
           "Erro, 'quantidade' deve ser um número inteiro positivo!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eventoExiste = await this.adminData.buscarEventoPorId(id_evento);
@@ -996,7 +996,7 @@ export class AdminBusiness {
           "Erro ao tentar encontrar evento usando 'id' fornecido, verifique se esse evento existe!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eventoPatch = await this.adminData.patchEvento(
