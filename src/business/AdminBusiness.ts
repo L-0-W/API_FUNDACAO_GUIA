@@ -260,7 +260,7 @@ export class AdminBusiness {
         );
 
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eValido = verificarToken(tokenFormatado);
@@ -274,7 +274,7 @@ export class AdminBusiness {
         );
 
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       exame_values.forEach((e) => {
@@ -288,7 +288,7 @@ export class AdminBusiness {
           );
 
           responseBuilder.adicionarBody({ sucesso: false });
-          return;
+          throw new Error(catchErros.CLIENTE);
         }
       });
 
@@ -303,7 +303,7 @@ export class AdminBusiness {
         );
 
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const localExiste = await this.adminData.buscarLocalPorId(id);
@@ -317,7 +317,7 @@ export class AdminBusiness {
         );
 
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const examesCriados = await this.adminData.criarExame(exame_values);
