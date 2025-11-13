@@ -2,7 +2,11 @@ import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { EventosBusiness } from "../business/EventosBusiness";
 import { eventosAPIretorno } from "../types/apiRetornoTipos";
-import { filtragemEventos, filtragemEventosStatus } from "../types/entidades";
+import {
+  catchErros,
+  filtragemEventos,
+  filtragemEventosStatus,
+} from "../types/entidades";
 
 export class EventosController {
   private eventosBusiness = new EventosBusiness();
@@ -14,12 +18,16 @@ export class EventosController {
       await this.eventosBusiness.obterTodosEventos(responseBuilder);
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message == catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+        responseBuilder.construir(res);
+      }
     }
   };
 

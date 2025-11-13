@@ -2,7 +2,11 @@ import { toUnicode } from "node:punycode";
 import { EventosData } from "../data/EventosData";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { eventosAPIretorno } from "../types/apiRetornoTipos";
-import { filtragemEventos, filtragemEventosStatus } from "../types/entidades";
+import {
+  catchErros,
+  filtragemEventos,
+  filtragemEventosStatus,
+} from "../types/entidades";
 import { criarDataNoFuturo } from "../utils/utilsTempo";
 
 export class EventosBusiness {
@@ -22,7 +26,7 @@ export class EventosBusiness {
         responseBuilder.adicionarMensagem("Não foi encontrado nemhum evento!");
         responseBuilder.adicionarBody({ eventos: eventos });
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
