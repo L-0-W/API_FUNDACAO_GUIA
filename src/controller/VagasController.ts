@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { VagasBusiness } from "../business/VagasBusiness";
 import { vagasAPIretorno } from "../types/apiRetornoTipos";
-import { filtrosVaga, vagasVinculo } from "../types/entidades";
+import { catchErros, filtrosVaga, vagasVinculo } from "../types/entidades";
 
 export class VagasController {
   private vagasBusiness = new VagasBusiness();
@@ -14,13 +14,17 @@ export class VagasController {
       await this.vagasBusiness.obterTodasAsVagas(responseBuilder);
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message === catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(`${err.sqlMessage || err.message}`);
+        responseBuilder.adicionarMensagem(`${err.sqlMessage || err.message}`);
 
-      responseBuilder.construir(res);
+        responseBuilder.construir(res);
+      }
     }
   };
 

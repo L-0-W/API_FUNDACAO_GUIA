@@ -1,7 +1,7 @@
 import { VagasData } from "../data/VagasData";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { vagasAPIretorno } from "../types/apiRetornoTipos";
-import { filtrosVaga, vagasVinculo } from "../types/entidades";
+import { catchErros, filtrosVaga, vagasVinculo } from "../types/entidades";
 import { criarDataNoPassado } from "../utils/utilsTempo";
 
 export class VagasBusiness {
@@ -22,7 +22,8 @@ export class VagasBusiness {
         );
 
         responseBuilder.adicionarBody({ vagas: vagas });
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
