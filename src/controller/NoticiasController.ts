@@ -57,6 +57,7 @@ export class NoticiaisController {
       return;
     } catch (err: any) {
       if (err.message === catchErros.CLIENTE) {
+        responseBuilder.construir(res);
       } else {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_SERVER_ERROR,
