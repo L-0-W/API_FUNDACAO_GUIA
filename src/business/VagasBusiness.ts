@@ -50,7 +50,8 @@ export class VagasBusiness {
         );
 
         responseBuilder.adicionarBody({ vagas: vaga });
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
