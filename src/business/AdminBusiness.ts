@@ -716,7 +716,7 @@ export class AdminBusiness {
           "TOKEN não autorizado, algo de errado esta no seu header de autorização",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eValido = verificarToken(tokenFormatado);
@@ -729,7 +729,7 @@ export class AdminBusiness {
           "TOKEN não autorizado, TOKEN incorreto ou expirado!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação de campos obrigatórios que não podem ser só espaços
@@ -746,7 +746,7 @@ export class AdminBusiness {
             "Parametros não pode incluir apenas espaços, e necessario algum valor",
           );
           responseBuilder.adicionarBody({ sucesso: false });
-          return;
+          throw new Error(catchErros.CLIENTE);
         }
       }
 
@@ -760,7 +760,7 @@ export class AdminBusiness {
           "Erro, 'noticia_id_fundacao' deve ser um número inteiro positivo!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação da data_publicacao
@@ -773,7 +773,7 @@ export class AdminBusiness {
           "Erro, 'data_publicacao' deve ser uma data válida!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Verifica se a notícia existe
@@ -786,7 +786,7 @@ export class AdminBusiness {
           "Erro ao tentar encontrar notícia usando 'id' fornecido, verifique se essa notícia existe!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Atualiza a notícia
