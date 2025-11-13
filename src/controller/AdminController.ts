@@ -871,8 +871,7 @@ export class AdminController {
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
         responseBuilder.adicionarMensagem("Erro, parâmetro id está incorreto");
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (!titulo || !data_inicio || !data_fim || !status || !quantidade) {
@@ -882,8 +881,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, campos obrigatórios: 'titulo', 'data_inicio', 'data_fim', 'status' e 'quantidade' devem ser fornecidos!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (
@@ -897,8 +895,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, 'status' deve ser um dos valores: 'programado', 'em_andamento', 'concluido' ou 'cancelado'!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (isNaN(Number(quantidade)) || Number(quantidade) <= 0) {
@@ -908,8 +905,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem(
           "Erro, 'quantidade' deve ser um número inteiro positivo!",
         );
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (!jwt_auth) {
@@ -920,8 +916,7 @@ export class AdminController {
           "Erro, TOKEN de verificação admin não foi encontrado!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       await this.adminBusiness.executarLogicaPatchEvento(
@@ -941,11 +936,15 @@ export class AdminController {
 
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+      if (err.message == catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+        responseBuilder.construir(res);
+      }
     }
   };
 }
