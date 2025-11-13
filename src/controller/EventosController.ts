@@ -24,40 +24,42 @@ export class EventosController {
   };
 
   buscarEventosPorQuery = async (req: Request, res: Response) => {
+    const responseBuilder = new ResponseBuilder<eventosAPIretorno>();
+
     try {
       const { status, dias, tags } = req.query;
 
       if (!status && !dias && !tags) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_BAD_REQUEST,
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
-        this.responseBuilder.adicionarMensagem(
+        responseBuilder.adicionarMensagem(
           "E Obrigatorio inserir pelo menos 1 dos filtros para pesquisa",
         );
-        this.responseBuilder.build(res);
+        responseBuilder.construir(res);
 
         return;
       }
 
       if (dias?.length != undefined && dias.toString().trim().length === 0) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_BAD_REQUEST,
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
-        this.responseBuilder.adicionarMensagem(
+        responseBuilder.adicionarMensagem(
           "Filtro dias não pode ser apenas espaços ou estar vazio!",
         );
-        this.responseBuilder.build(res);
+        responseBuilder.construir(res);
         return;
       }
 
       if (tags?.length != undefined && tags.toString().trim().length === 0) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_BAD_REQUEST,
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
-        this.responseBuilder.adicionarMensagem(
+        responseBuilder.adicionarMensagem(
           "Filtro tags não pode ser apenas espaços ou estar vazio!",
         );
-        this.responseBuilder.build(res);
+        responseBuilder.construir(res);
         return;
       }
 
@@ -65,26 +67,24 @@ export class EventosController {
         status?.length != undefined &&
         status.toString().trim().length === 0
       ) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_BAD_REQUEST,
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
-        this.responseBuilder.adicionarMensagem(
+        responseBuilder.adicionarMensagem(
           "Filtro status não pode ser apenas espaços ou estar vazio!",
         );
-        this.responseBuilder.build(res);
+        responseBuilder.construir(res);
         return;
       }
 
       const diasN = Number(dias);
 
       if (dias?.length != undefined && !Number.isInteger(diasN)) {
-        this.responseBuilder.adicionarCodigoStatus(
-          this.responseBuilder.STATUS_CODE_BAD_REQUEST,
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
-        this.responseBuilder.adicionarMensagem(
-          "Filtro dias Precisa ser um inteiro",
-        );
-        this.responseBuilder.build(res);
+        responseBuilder.adicionarMensagem("Filtro dias Precisa ser um inteiro");
+        responseBuilder.construir(res);
         return;
       }
 
@@ -96,17 +96,17 @@ export class EventosController {
 
       await this.eventosBusiness.obterEventosPorFiltragem(
         filtros,
-        this.responseBuilder,
+        responseBuilder,
       );
 
-      this.responseBuilder.build(res);
+      responseBuilder.construir(res);
     } catch (err: any) {
-      this.responseBuilder.adicionarCodigoStatus(
-        this.responseBuilder.STATUS_CODE_SERVER_ERROR,
+      responseBuilder.adicionarCodigoStatus(
+        responseBuilder.STATUS_CODE_SERVER_ERROR,
       );
 
-      this.responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      this.responseBuilder.build(res);
+      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      responseBuilder.construir(res);
     }
   };
 
