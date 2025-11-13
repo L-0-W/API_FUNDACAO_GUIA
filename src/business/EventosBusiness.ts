@@ -2,7 +2,11 @@ import { toUnicode } from "node:punycode";
 import { EventosData } from "../data/EventosData";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { eventosAPIretorno } from "../types/apiRetornoTipos";
-import { filtragemEventos, filtragemEventosStatus } from "../types/entidades";
+import {
+  catchErros,
+  filtragemEventos,
+  filtragemEventosStatus,
+} from "../types/entidades";
 import { criarDataNoFuturo } from "../utils/utilsTempo";
 
 export class EventosBusiness {
@@ -22,7 +26,7 @@ export class EventosBusiness {
         responseBuilder.adicionarMensagem("Não foi encontrado nemhum evento!");
         responseBuilder.adicionarBody({ eventos: eventos });
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
@@ -51,7 +55,7 @@ export class EventosBusiness {
         );
         responseBuilder.adicionarBody({ eventos: [evento] });
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
@@ -86,7 +90,7 @@ export class EventosBusiness {
             responseBuilder.adicionarMensagem(
               "Filtro de status precisa esta entre futuros | em_andamento | encerrado",
             );
-            return;
+            throw new Error(catchErros.CLIENTE);
             break;
           default:
             responseBuilder.adicionarCodigoStatus(
@@ -95,7 +99,7 @@ export class EventosBusiness {
             responseBuilder.adicionarMensagem(
               "Filtro de status precisa esta entre futuros | em_andamento | encerrado",
             );
-            return;
+            throw new Error(catchErros.CLIENTE);
             break;
         }
       }
@@ -111,7 +115,7 @@ export class EventosBusiness {
         responseBuilder.adicionarMensagem(
           "Tags não pode ser vazio e não pode conter apenas caracteres especiais",
         );
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (filtros.tags && typeof filtros.tags === "string") {
@@ -130,13 +134,11 @@ export class EventosBusiness {
         responseBuilder.adicionarMensagem(
           "Não existe nemhuma evento com esses filtros",
         );
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
       responseBuilder.adicionarBody({ eventos: eventos });
-
-      return;
     } catch (err: any) {
       throw new Error(err);
     }

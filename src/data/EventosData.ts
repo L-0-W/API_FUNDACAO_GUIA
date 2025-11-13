@@ -1,6 +1,10 @@
 import { get } from "node:https";
 import { connection } from "../dbConnection";
-import { filtragemEventos, filtragemEventosStatus } from "../types/entidades";
+import {
+  catchErros,
+  filtragemEventos,
+  filtragemEventosStatus,
+} from "../types/entidades";
 import { evento } from "../types/entidades";
 
 export class EventosData {

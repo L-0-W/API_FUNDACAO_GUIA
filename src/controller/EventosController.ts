@@ -2,7 +2,11 @@ import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { EventosBusiness } from "../business/EventosBusiness";
 import { eventosAPIretorno } from "../types/apiRetornoTipos";
-import { filtragemEventos, filtragemEventosStatus } from "../types/entidades";
+import {
+  catchErros,
+  filtragemEventos,
+  filtragemEventosStatus,
+} from "../types/entidades";
 
 export class EventosController {
   private eventosBusiness = new EventosBusiness();
@@ -14,12 +18,16 @@ export class EventosController {
       await this.eventosBusiness.obterTodosEventos(responseBuilder);
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message == catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+        responseBuilder.construir(res);
+      }
     }
   };
 
@@ -36,9 +44,8 @@ export class EventosController {
         responseBuilder.adicionarMensagem(
           "E Obrigatorio inserir pelo menos 1 dos filtros para pesquisa",
         );
-        responseBuilder.construir(res);
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (dias?.length != undefined && dias.toString().trim().length === 0) {
@@ -48,8 +55,8 @@ export class EventosController {
         responseBuilder.adicionarMensagem(
           "Filtro dias não pode ser apenas espaços ou estar vazio!",
         );
-        responseBuilder.construir(res);
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (tags?.length != undefined && tags.toString().trim().length === 0) {
@@ -59,8 +66,8 @@ export class EventosController {
         responseBuilder.adicionarMensagem(
           "Filtro tags não pode ser apenas espaços ou estar vazio!",
         );
-        responseBuilder.construir(res);
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (
@@ -73,8 +80,8 @@ export class EventosController {
         responseBuilder.adicionarMensagem(
           "Filtro status não pode ser apenas espaços ou estar vazio!",
         );
-        responseBuilder.construir(res);
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       const diasN = Number(dias);
@@ -84,8 +91,8 @@ export class EventosController {
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
         responseBuilder.adicionarMensagem("Filtro dias Precisa ser um inteiro");
-        responseBuilder.construir(res);
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       const filtros: filtragemEventos = {
@@ -101,12 +108,16 @@ export class EventosController {
 
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message == catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+        responseBuilder.construir(res);
+      }
     }
   };
 
@@ -125,20 +136,23 @@ export class EventosController {
           "O parametro 'id' precisa ser um numero inteiro!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       await this.eventosBusiness.obterEventoPorId(eventoId, responseBuilder);
 
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message == catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+        responseBuilder.construir(res);
+      }
     }
   };
 }
