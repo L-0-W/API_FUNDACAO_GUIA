@@ -530,7 +530,7 @@ export class AdminBusiness {
           "TOKEN não autorizado, algo de errado esta no seu header de autorização",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eValido = verificarToken(tokenFormatado);
@@ -543,7 +543,7 @@ export class AdminBusiness {
           "TOKEN não autorizado, TOKEN incorreto ou expirado!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação de campos vazios ou só com espaços
@@ -560,7 +560,7 @@ export class AdminBusiness {
             "Parametros não pode incluir apenas espaços, e necessario algum valor",
           );
           responseBuilder.adicionarBody({ sucesso: false });
-          return;
+          throw new Error(catchErros.CLIENTE);
         }
       }
 
@@ -574,7 +574,7 @@ export class AdminBusiness {
           "Erro, 'quantidade' deve ser um número inteiro positivo!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Validação da data_publicacao
@@ -587,7 +587,7 @@ export class AdminBusiness {
           "Erro, 'data_publicacao' deve ser uma data válida!",
         );
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       // Criar a vaga
