@@ -5,7 +5,13 @@ import {
   adminAPIretorno,
   localizacaoAPIretorno,
 } from "../types/apiRetornoTipos";
-import { evento, exame, noticia, vagasEmprego } from "../types/entidades";
+import {
+  catchErros,
+  evento,
+  exame,
+  noticia,
+  vagasEmprego,
+} from "../types/entidades";
 import { X509Certificate } from "node:crypto";
 import e from "cors";
 import { describe } from "node:test";
@@ -29,7 +35,7 @@ export class AdminBusiness {
         responseBuilder.adicionarMensagem("Erro ao tentar formatar token...");
         responseBuilder.adicionarBody({ sucesso: false });
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eValido = verificarToken(tokenFormatado);
@@ -46,7 +52,8 @@ export class AdminBusiness {
         );
 
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       const resultado = await this.adminData.deletarExamePorId(id);
@@ -58,7 +65,7 @@ export class AdminBusiness {
 
         responseBuilder.adicionarMensagem("Exame não econtrado...");
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
