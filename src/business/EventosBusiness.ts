@@ -90,7 +90,7 @@ export class EventosBusiness {
             responseBuilder.adicionarMensagem(
               "Filtro de status precisa esta entre futuros | em_andamento | encerrado",
             );
-            return;
+            throw new Error(catchErros.CLIENTE);
             break;
           default:
             responseBuilder.adicionarCodigoStatus(
@@ -99,7 +99,7 @@ export class EventosBusiness {
             responseBuilder.adicionarMensagem(
               "Filtro de status precisa esta entre futuros | em_andamento | encerrado",
             );
-            return;
+            throw new Error(catchErros.CLIENTE);
             break;
         }
       }
@@ -115,7 +115,7 @@ export class EventosBusiness {
         responseBuilder.adicionarMensagem(
           "Tags não pode ser vazio e não pode conter apenas caracteres especiais",
         );
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (filtros.tags && typeof filtros.tags === "string") {
@@ -134,13 +134,11 @@ export class EventosBusiness {
         responseBuilder.adicionarMensagem(
           "Não existe nemhuma evento com esses filtros",
         );
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
       responseBuilder.adicionarBody({ eventos: eventos });
-
-      return;
     } catch (err: any) {
       throw new Error(err);
     }
