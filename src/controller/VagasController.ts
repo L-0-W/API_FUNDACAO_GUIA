@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { VagasBusiness } from "../business/VagasBusiness";
 import { vagasAPIretorno } from "../types/apiRetornoTipos";
-import { filtrosVaga, vagasVinculo } from "../types/entidades";
+import { catchErros, filtrosVaga, vagasVinculo } from "../types/entidades";
 
 export class VagasController {
   private vagasBusiness = new VagasBusiness();
@@ -14,13 +14,17 @@ export class VagasController {
       await this.vagasBusiness.obterTodasAsVagas(responseBuilder);
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message === catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(`${err.sqlMessage || err.message}`);
+        responseBuilder.adicionarMensagem(`${err.sqlMessage || err.message}`);
 
-      responseBuilder.construir(res);
+        responseBuilder.construir(res);
+      }
     }
   };
 
@@ -39,21 +43,24 @@ export class VagasController {
           "Parametro: 'id' esta incorreto ou faltando!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       await this.vagasBusiness.obterVagaPorId(vagaId, responseBuilder);
 
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message === catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(`${err.sqlMessage || err.message}`);
+        responseBuilder.adicionarMensagem(`${err.sqlMessage || err.message}`);
 
-      responseBuilder.construir(res);
+        responseBuilder.construir(res);
+      }
     }
   };
 
@@ -80,8 +87,7 @@ export class VagasController {
           "Parametro: 'cargo', 'cidade', 'modalidade', 'tipo_vinculo', 'recentes' e 'beneficios' esta incorreto ou faltando!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (cargo?.toString().trim().length === 0) {
@@ -93,8 +99,7 @@ export class VagasController {
           "Parametro: 'cargo' precisa ter algum conteudo!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (cidade?.toString().trim().length === 0) {
@@ -106,8 +111,7 @@ export class VagasController {
           "Parametro: 'cidade' precisa ter algum conteudo!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (modalidade?.toString().trim().length === 0) {
@@ -119,8 +123,7 @@ export class VagasController {
           "Parametro: 'modalidade' precisa ter algum conteudo!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (tipo_vinculo?.toString().trim().length === 0) {
@@ -132,8 +135,7 @@ export class VagasController {
           "Parametro: 'tipo_vinculo' precisa ter algum conteudo!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (recentes?.toString().trim().length === 0) {
@@ -145,8 +147,7 @@ export class VagasController {
           "Parametro: 'recentes' precisa ter algum conteudo!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (beneficios?.toString().trim().length === 0) {
@@ -158,8 +159,7 @@ export class VagasController {
           "Parametro: 'beneficios' precisa ter algum conteudo!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       let filtros: filtrosVaga = {};
@@ -174,8 +174,7 @@ export class VagasController {
           "Parametro: 'recentes' precisa ter ser numerico e inteiro!",
         );
 
-        responseBuilder.construir(res);
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       cargo != undefined ? (filtros.cargo = cargo.toString()) : undefined;
@@ -196,13 +195,17 @@ export class VagasController {
       await this.vagasBusiness.obterVagaPorFiltro(filtros, responseBuilder);
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message === catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(`${err.sqlMessage || err.message}`);
+        responseBuilder.adicionarMensagem(`${err.sqlMessage || err.message}`);
 
-      responseBuilder.construir(res);
+        responseBuilder.construir(res);
+      }
     }
   };
 }

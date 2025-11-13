@@ -1,7 +1,7 @@
 import { VagasData } from "../data/VagasData";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { vagasAPIretorno } from "../types/apiRetornoTipos";
-import { filtrosVaga, vagasVinculo } from "../types/entidades";
+import { catchErros, filtrosVaga, vagasVinculo } from "../types/entidades";
 import { criarDataNoPassado } from "../utils/utilsTempo";
 
 export class VagasBusiness {
@@ -22,7 +22,8 @@ export class VagasBusiness {
         );
 
         responseBuilder.adicionarBody({ vagas: vagas });
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
@@ -49,7 +50,8 @@ export class VagasBusiness {
         );
 
         responseBuilder.adicionarBody({ vagas: vaga });
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
@@ -83,7 +85,7 @@ export class VagasBusiness {
               "Tipo Vinculo preicsar ser 'CLT' | 'PJ' ou 'ESTAGIO' ",
             );
 
-            return;
+            throw new Error(catchErros.CLIENTE);
         }
       }
 
@@ -97,7 +99,8 @@ export class VagasBusiness {
         responseBuilder.adicionarMensagem(
           "Em beneficio e preciso que tenha algum valor seguindo: beneficios='valor,valor,valor' ",
         );
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       const recentesTimeStamp = criarDataNoPassado(filtros.recentes as number);
@@ -126,7 +129,7 @@ export class VagasBusiness {
 
         responseBuilder.adicionarBody({ vagas: vagas });
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
