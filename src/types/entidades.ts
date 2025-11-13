@@ -1,3 +1,8 @@
+export enum catchErros {
+  CLIENTE = "cliente",
+  SERVER = "server",
+}
+
 export type admin = {
   id: number;
   nome: string;

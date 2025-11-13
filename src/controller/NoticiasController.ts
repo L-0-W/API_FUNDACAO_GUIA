@@ -2,7 +2,7 @@ import { NoticiaisBusiness } from "../business/NoticiasBusiness";
 import { Request, Response } from "express";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { noticiaAPIretorno } from "../types/apiRetornoTipos";
-import { params_noticia } from "../types/entidades";
+import { catchErros, params_noticia } from "../types/entidades";
 
 export class NoticiaisController {
   private noticiasBusiness = new NoticiaisBusiness();
@@ -24,9 +24,7 @@ export class NoticiaisController {
           "Foi coloado um valor incorreto no parametro 'recentes'..",
         );
 
-        responseBuilder.construir(res);
-
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (tags && tags.toString().split(",").length === 0) {
@@ -36,8 +34,10 @@ export class NoticiaisController {
         responseBuilder.adicionarMensagem(
           "Ao filtrar por tags, e obrigatorio que coloque os valores nesse formato: tags=valor1,valor2",
         );
-        responseBuilder.construir(res);
+
+        throw new Error(catchErros.CLIENTE);
       }
+
       const params: params_noticia = {};
 
       console.log(setor);
@@ -56,12 +56,15 @@ export class NoticiaisController {
       responseBuilder.construir(res);
       return;
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
+      if (err.message === catchErros.CLIENTE) {
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
 
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
-      responseBuilder.construir(res);
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+        responseBuilder.construir(res);
+      }
     }
   };
 }
