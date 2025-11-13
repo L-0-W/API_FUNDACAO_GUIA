@@ -148,7 +148,7 @@ export class AdminBusiness {
         responseBuilder.adicionarMensagem("Erro ao tentar formatar token...");
         responseBuilder.adicionarBody({ sucesso: false });
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eValido = verificarToken(tokenFormatado);
@@ -159,15 +159,13 @@ export class AdminBusiness {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_NAO_AUTORIZADO,
         );
-
         responseBuilder.adicionarMensagem(
           "O token recebido esta expirado ou não e valido...",
         );
-
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
-      }
 
+        throw new Error(catchErros.CLIENTE);
+      }
       const resultado = await this.adminData.deletarVagaPorId(id);
 
       if (resultado == 0) {
@@ -177,7 +175,8 @@ export class AdminBusiness {
 
         responseBuilder.adicionarMensagem("Vaga não econtrado...");
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);

@@ -50,6 +50,7 @@ export class AdminController {
       responseBuilder.construir(res);
     } catch (err: any) {
       if (err.message === catchErros.CLIENTE) {
+        responseBuilder.construir(res);
       } else {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_SERVER_ERROR,
@@ -76,9 +77,7 @@ export class AdminController {
         responseBuilder.adicionarMensagem("Id esta incorreto..");
         responseBuilder.adicionarBody({ sucesso: false });
 
-        responseBuilder.construir(res);
-
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       if (!jwt_auth) {
@@ -89,21 +88,23 @@ export class AdminController {
         responseBuilder.adicionarMensagem("Token necessario não existe");
         responseBuilder.adicionarBody({ sucesso: false });
 
-        responseBuilder.construir(res);
-
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       await this.adminBusiness.deletarVagasPorId(id, jwt_auth, responseBuilder);
 
       responseBuilder.construir(res);
     } catch (err: any) {
-      responseBuilder.adicionarCodigoStatus(
-        responseBuilder.STATUS_CODE_SERVER_ERROR,
-      );
-      responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
+      if (err.message == catchErros.CLIENTE) {
+        responseBuilder.construir(res);
+      } else {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SERVER_ERROR,
+        );
+        responseBuilder.adicionarMensagem(err.sqlMessage || err.message);
 
-      responseBuilder.construir(res);
+        responseBuilder.construir(res);
+      }
     }
   };
 
