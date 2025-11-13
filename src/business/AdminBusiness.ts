@@ -92,7 +92,7 @@ export class AdminBusiness {
         responseBuilder.adicionarMensagem("Erro ao tentar formatar token...");
         responseBuilder.adicionarBody({ sucesso: false });
 
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const eValido = verificarToken(tokenFormatado);
@@ -109,7 +109,7 @@ export class AdminBusiness {
         );
 
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       const resultado = await this.adminData.deletarExamePorId(id);
@@ -121,7 +121,7 @@ export class AdminBusiness {
 
         responseBuilder.adicionarMensagem("Evento não econtrado...");
         responseBuilder.adicionarBody({ sucesso: false });
-        return;
+        throw new Error(catchErros.CLIENTE);
       }
 
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
