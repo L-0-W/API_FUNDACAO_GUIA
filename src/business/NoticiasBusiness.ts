@@ -2,7 +2,7 @@ import { ResponseBuilder } from "../ResponseBuilder";
 import { NoticiaisData } from "../data/NoticiasData";
 import { LIMIT_WORKER_THREADS } from "sqlite3";
 
-import { noticia_DTO, params_noticia } from "../types/entidades";
+import { catchErros, noticia_DTO, params_noticia } from "../types/entidades";
 import { noticiaAPIretorno } from "../types/apiRetornoTipos";
 
 export class NoticiaisBusiness {
@@ -26,9 +26,12 @@ export class NoticiaisBusiness {
           responseBuilder.adicionarMensagem(
             "Não foi encontrado nemhuma noticia desde os ultimos 30 dias..",
           );
+
+          throw new Error(catchErros.CLIENTE);
         } else {
           responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
         }
+
         const noticiaRetorno: noticiaAPIretorno = {
           noticias: retorno,
         };
