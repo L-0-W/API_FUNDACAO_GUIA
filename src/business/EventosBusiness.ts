@@ -3,7 +3,7 @@ import { EventosData } from "../data/EventosData";
 import { ResponseBuilder } from "../ResponseBuilder";
 import { eventosAPIretorno } from "../types/apiRetornoTipos";
 import { filtragemEventos, filtragemEventosStatus } from "../types/entidades";
-import { transformarDataEmTimeStamp } from "../utils/utilsTempo";
+import { criarDataNoFuturo } from "../utils/utilsTempo";
 
 export class EventosBusiness {
   private eventosData = new EventosData();
@@ -81,7 +81,7 @@ export class EventosBusiness {
             break;
           case filtragemEventosStatus.Vazio:
             responseBuilder.adicionarCodigoStatus(
-              responseBuilder.STATUS_CODE_BAD_REQUEST,
+              responseBuilder.STATUS_CODE_ERRO_USUARIO,
             );
             responseBuilder.adicionarMensagem(
               "Filtro de status precisa esta entre futuros | em_andamento | encerrado",
@@ -90,7 +90,7 @@ export class EventosBusiness {
             break;
           default:
             responseBuilder.adicionarCodigoStatus(
-              responseBuilder.STATUS_CODE_BAD_REQUEST,
+              responseBuilder.STATUS_CODE_ERRO_USUARIO,
             );
             responseBuilder.adicionarMensagem(
               "Filtro de status precisa esta entre futuros | em_andamento | encerrado",
@@ -101,12 +101,12 @@ export class EventosBusiness {
       }
 
       if (filtros.dias) {
-        filtros.dias = transformarDataEmTimeStamp(filtros.dias);
+        filtros.dias = criarDataNoFuturo(filtros.dias);
       }
 
       if (filtros.tags?.length === 0) {
         responseBuilder.adicionarCodigoStatus(
-          responseBuilder.STATUS_CODE_BAD_REQUEST,
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
         responseBuilder.adicionarMensagem(
           "Tags não pode ser vazio e não pode conter apenas caracteres especiais",
@@ -120,7 +120,7 @@ export class EventosBusiness {
           .map((e) => e.trim().toLowerCase());
       }
 
-      const filtro = Object.values(filtros).filter((e) => e);
+      const filtro = Object.values(filtros).filter((e) => e) as string[];
       const eventos = await this.eventosData.buscarEventoPorFiltro(filtro);
 
       if (eventos.length === 0) {

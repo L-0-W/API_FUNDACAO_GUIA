@@ -42,16 +42,6 @@ export type filtrosVaga = {
   recentes?: number;
 };
 
-export type evento = {
-  id?: number;
-  titulo?: string;
-  descricao?: string;
-  data_inicio?: number;
-  data_fim?: number;
-  status?: string;
-  publico_alvo?: string;
-};
-
 export type noticia_DTO = {
   titulo: string;
   resumo: string;
@@ -136,13 +126,13 @@ export enum filtragemEventosStatus {
   Vazio = "",
 }
 
-export type filtragemEventos {
+export type filtragemEventos = {
   status?: filtragemEventosStatus | string;
   tags?: string | string[];
   dias?: number;
-}
+};
 
-export type local {
+export type local = {
   nome?: string;
   bloco?: string;
   setor?: string;
@@ -158,9 +148,9 @@ export type local {
       descricao: string[];
     };
   };
-}
+};
 
-export type evento {
+export type evento = {
   id?: number;
   titulo?: string;
   descricao?: string;
@@ -169,5 +159,4 @@ export type evento {
   status?: string;
   local?: local;
   publico_alvo?: string;
-}
-
+};
