@@ -131,4 +131,26 @@ describe("Testando EndPoint 'buscarEventosPorQuery' ", () => {
       expect(axiosErr.status).toBe(400);
     }
   });
+
+  test("Deve retornar erro 400, parametro tags foi especificado mas esta vazio", async () => {
+    try {
+      await axios.get("http://localhost:3003/eventos/filtrar?tags=");
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(400);
+    }
+  });
+
+  test("Deve retornar erro 400, tudo especificado mas vazio", async () => {
+    try {
+      await axios.get(
+        "http://localhost:3003/eventos/filtrar?tags=&status=&dias",
+      );
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(400);
+    }
+  });
 });
