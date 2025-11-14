@@ -109,4 +109,26 @@ describe("Testando EndPoint 'buscarEventosPorQuery' ", () => {
       expect(axiosErr.status).toBe(400);
     }
   });
+
+  test("Deve retornar erro 400, parametro dias foi especificado mas esta vazio", async () => {
+    try {
+      await axios.get(
+        "http://localhost:3003/eventos/filtrar?status=em_andamento&dias",
+      );
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(400);
+    }
+  });
+
+  test("Deve retornar erro 400, parametro status foi especificado mas esta vazio", async () => {
+    try {
+      await axios.get("http://localhost:3003/eventos/filtrar?status=");
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(400);
+    }
+  });
 });
