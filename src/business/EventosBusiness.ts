@@ -34,7 +34,7 @@ export class EventosBusiness {
 
       return;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 

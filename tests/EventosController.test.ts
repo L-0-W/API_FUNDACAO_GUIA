@@ -46,3 +46,15 @@ describe("Testando EndPoint 'buscarPorId' ", () => {
     }
   });
 });
+
+describe("Testando EndPoint 'buscarTodosEventos' ", () => {
+  test("Caso database não tenha eventos, deve retornar 404", async () => {
+    try {
+      await axios.get("http://localhost:3003/eventos");
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(404);
+    }
+  });
+});
