@@ -110,7 +110,7 @@ export class EventosBusiness {
         filtros.dias = criarDataNoFuturo(filtros.dias);
       }
 
-      if (filtros.tags?.length === 0) {
+      if (filtros.tags && filtros.tags?.length === 0) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
@@ -142,7 +142,7 @@ export class EventosBusiness {
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
       responseBuilder.adicionarBody({ eventos: eventos });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 }

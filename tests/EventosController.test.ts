@@ -163,4 +163,36 @@ describe("Testando EndPoint 'buscarEventosPorQuery' ", () => {
       expect(axiosErr.status).toBe(400);
     }
   });
+
+  test("Deve retornar 200, parametro dias preenchido, casa datbase tenha eventos com esse filtro", async () => {
+    try {
+      await axios.get("http://localhost:3003/eventos/filtrar?dias=10");
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(200);
+    }
+  });
+
+  test("Deve retornar 200, parametro status preenchido, casa datbase tenha eventos com esse filtro", async () => {
+    try {
+      await axios.get(
+        "http://localhost:3003/eventos/filtrar?status=em_andamento",
+      );
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(200);
+    }
+  });
+
+  test("Deve retornar 400, parametro status fora do enum", async () => {
+    try {
+      await axios.get("http://localhost:3003/eventos/filtrar?status=abu");
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(400);
+    }
+  });
 });
