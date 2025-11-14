@@ -32,3 +32,25 @@ describe("Testando EndPoint 'buscarTodasVagas'", () => {
     expect(response.status).toBe(200);
   });
 });
+
+describe("Testando EndPoint 'buscarVagasPorFiltro'", () => {
+  test.each([
+    { query: "", desc: "nenhuma query foi preenchida" },
+    { query: "?recentes", desc: "parâmetro recentes sem valor" },
+    { query: "?cidade=", desc: "parâmetro cidade vazio" },
+    { query: "?recentes=1.2", desc: "parâmetro recentes não é inteiro" },
+    { query: "?recentes=a", desc: "parâmetro recentes não é numérico" },
+    {
+      query: "?cargo=&cidade=&modalidade=",
+      desc: "múltiplos parâmetros vazios",
+    },
+    { query: "?tipo_vinculo=", desc: "parâmetro tipo_vinculo vazio" },
+  ])("Deve retornar erro 400, pois %s (%s)", async ({ query, desc }) => {
+    try {
+      await axios.get(`${URL}/filtrar${query}`);
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+      expect(axiosErr.status).toBe(400);
+    }
+  });
+});
