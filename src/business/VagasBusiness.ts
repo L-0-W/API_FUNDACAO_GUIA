@@ -30,7 +30,7 @@ export class VagasBusiness {
       responseBuilder.adicionarBody({ vagas: vagas });
       return;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -59,7 +59,7 @@ export class VagasBusiness {
 
       return;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -137,7 +137,7 @@ export class VagasBusiness {
 
       return;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 }
