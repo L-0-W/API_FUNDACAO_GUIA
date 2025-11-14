@@ -9,7 +9,7 @@ import {
 } from "../types/entidades";
 
 export class EventosController {
-  private eventosBusiness = new EventosBusiness();
+  public eventosBusiness = new EventosBusiness();
 
   buscarTodosEventos = async (req: Request, res: Response) => {
     const responseBuilder = new ResponseBuilder<eventosAPIretorno>();
