@@ -9,7 +9,7 @@ import {
 } from "../types/entidades";
 
 export class EventosController {
-  private eventosBusiness = new EventosBusiness();
+  public eventosBusiness = new EventosBusiness();
 
   buscarTodosEventos = async (req: Request, res: Response) => {
     const responseBuilder = new ResponseBuilder<eventosAPIretorno>();
@@ -18,7 +18,7 @@ export class EventosController {
       await this.eventosBusiness.obterTodosEventos(responseBuilder);
       responseBuilder.construir(res);
     } catch (err: any) {
-      if (err.message == catchErros.CLIENTE) {
+      if (err.message === catchErros.CLIENTE) {
         responseBuilder.construir(res);
       } else {
         responseBuilder.adicionarCodigoStatus(
