@@ -71,4 +71,15 @@ describe("Testando EndPoint 'buscarVagasPorFiltro'", () => {
     const response = await axios.get(`${URL}/filtrar${validQuery}`);
     expect(response.status).toBe(200);
   });
+
+  test("Deve retornar 404, com filtros válidos, mas sem resultados", async () => {
+    const validQuery = "?cidade=Inexistente&recentes=30";
+
+    try {
+      await axios.get(`${URL}/filtrar${validQuery}`);
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+      expect((axiosErr as any).status).toBe(404);
+    }
+  });
 });
