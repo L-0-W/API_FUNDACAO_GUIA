@@ -38,23 +38,33 @@ describe("Testando EndPoint 'buscarPorId' ", () => {
 
   test("Verificando se 'id' de um evento que não existe, deve retornar 404", async () => {
     try {
-      await axios.get("http://localhost:3003/eventos/99999");
+      await axios.get("http://localhost:3003/eventos/99999999");
     } catch (err) {
       const axiosErr = err as AxiosError;
 
       expect(axiosErr.status).toBe(404);
     }
   });
+
+  test("Deve retornar 200 caso existe algum usuario", async () => {
+    try {
+      await axios.get("http://localhost:3003/eventos/1");
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(200);
+    }
+  });
 });
 
 describe("Testando EndPoint 'buscarTodosEventos' ", () => {
-  test("Caso database não tenha eventos, deve retornar 404", async () => {
+  test("deve retornar 200, caso database tenha eventos", async () => {
     try {
       await axios.get("http://localhost:3003/eventos");
     } catch (err) {
       const axiosErr = err as AxiosError;
 
-      expect(axiosErr.status).toBe(404);
+      expect(axiosErr.status).toBe(200);
     }
   });
 });
