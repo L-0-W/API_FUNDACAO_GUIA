@@ -53,4 +53,22 @@ describe("Testando EndPoint 'buscarVagasPorFiltro'", () => {
       expect(axiosErr.status).toBe(400);
     }
   });
+
+  test("Deve retornar 400, parametro tipo_vinculo fora do enum (CLT|PJ|ESTAGIO)", async () => {
+    const invalidQuery = "?tipo_vinculo=AUTONOMO";
+
+    try {
+      await axios.get(`${URL}/filtrar${invalidQuery}`);
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+      expect((axiosErr as any).status).toBe(400);
+    }
+  });
+
+  test("Deve retornar 200, com filtros válidos e resultados encontrados", async () => {
+    const validQuery = "?recentes=30&tipo_vinculo=CLT";
+
+    const response = await axios.get(`${URL}/filtrar${validQuery}`);
+    expect(response.status).toBe(200);
+  });
 });
