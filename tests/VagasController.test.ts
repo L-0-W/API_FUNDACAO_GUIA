@@ -15,4 +15,20 @@ describe("Testando EndPoint 'buscarVagaPorId'", () => {
       expect((axiosError as any).status).toBe(400);
     }
   });
+
+  test("Verificando se 'id' de uma vaga que não existe, deve retornar 404", async () => {
+    try {
+      await axios.get(`${URL}/99999999`);
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+      expect((axiosErr as any).status).toBe(404);
+    }
+  });
+});
+
+describe("Testando EndPoint 'buscarTodasVagas'", () => {
+  test("Deve retornar 200, caso database tenha vagas", async () => {
+    const response = await axios.get(`${URL}`);
+    expect(response.status).toBe(200);
+  });
 });
