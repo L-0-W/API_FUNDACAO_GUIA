@@ -18,7 +18,7 @@ export class EventosController {
       await this.eventosBusiness.obterTodosEventos(responseBuilder);
       responseBuilder.construir(res);
     } catch (err: any) {
-      if (err.message == catchErros.CLIENTE) {
+      if (err.message === catchErros.CLIENTE) {
         responseBuilder.construir(res);
       } else {
         responseBuilder.adicionarCodigoStatus(
