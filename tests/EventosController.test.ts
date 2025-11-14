@@ -79,4 +79,34 @@ describe("Testando EndPoint 'buscarEventosPorQuery' ", () => {
       expect(axiosErr.status).toBe(400);
     }
   });
+
+  test("Deve retornar erro 400, parametro dias foi especificado mas esta vazio", async () => {
+    try {
+      await axios.get("http://localhost:3003/eventos/filtrar?dias=   ");
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(400);
+    }
+  });
+
+  test("Deve retornar erro 400, parametro dias não e um inteiro", async () => {
+    try {
+      await axios.get("http://localhost:3003/eventos/filtrar?dias=a");
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(400);
+    }
+  });
+
+  test("Deve retornar erro 400, parametro dias não e um inteiro", async () => {
+    try {
+      await axios.get("http://localhost:3003/eventos/filtrar?dias=1.2");
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+
+      expect(axiosErr.status).toBe(400);
+    }
+  });
 });
