@@ -30,7 +30,7 @@ export class LoginBusiness {
 
       if (!admin_retorno || admin_retorno[0] == undefined) {
         responseBuilder.adicionarCodigoStatus(
-          responseBuilder.STATUS_CODE_NAO_AUTORIZADO,
+          responseBuilder.STATUS_CODE_VAZIO,
         );
 
         responseBuilder.adicionarMensagem(`A senha ou email esta incorreto...`);
