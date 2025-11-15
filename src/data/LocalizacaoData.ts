@@ -11,6 +11,7 @@ export class LocalizacaoData {
         .first();
       return exames;
     } catch (err: any) {
+      console.log(err);
       throw new Error(err);
     }
   };

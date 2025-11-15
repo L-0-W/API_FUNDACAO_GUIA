@@ -13,7 +13,7 @@ export class LocalizacaoBusiness {
     try {
       const exames = await this.localizacaoData.buscarExames(exameFormatado);
 
-      console.log("Business -> " + exames);
+      console.log("Business ->", exames);
 
       if (!exames || exames == undefined) {
         console.log("Business -> Erro, voltando vazio");
@@ -69,7 +69,7 @@ export class LocalizacaoBusiness {
 
       return;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -137,7 +137,7 @@ export class LocalizacaoBusiness {
 
       return;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -211,7 +211,7 @@ export class LocalizacaoBusiness {
 
       return;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -279,7 +279,7 @@ export class LocalizacaoBusiness {
 
       return;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 }

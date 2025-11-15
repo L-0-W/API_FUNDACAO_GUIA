@@ -17,4 +17,40 @@ describe("Testando 'buscarLocalizacaoPorParametros'", () => {
       expect(responseErr.status).toBe(400);
     }
   });
+
+  test("Teste passando parametro setor vazio, deve retornar erro 400", async () => {
+    try {
+      await axios.get(URL + "?setor=");
+    } catch (err) {
+      const responseErr = err as AxiosError;
+      expect(responseErr.status).toBe(400);
+    }
+  });
+
+  test("Teste passando parametro bloco vazio, deve retornar erro 400", async () => {
+    try {
+      await axios.get(URL + "?bloco=");
+    } catch (err) {
+      const responseErr = err as AxiosError;
+      expect(responseErr.status).toBe(400);
+    }
+  });
+
+  test("Teste passando parametro exame vazio, deve retornar erro 400", async () => {
+    try {
+      await axios.get(URL + "?exame=");
+    } catch (err) {
+      const responseErr = err as AxiosError;
+      expect(responseErr.status).toBe(400);
+    }
+  });
+
+  test("Teste passando parametro exame, tal exame não deve existir, e deve retornar 404", async () => {
+    try {
+      await axios.get(URL + "?exame=bugabuga");
+    } catch (err) {
+      const responseErr = err as AxiosError;
+      expect(responseErr.status).toBe(404);
+    }
+  });
 });
