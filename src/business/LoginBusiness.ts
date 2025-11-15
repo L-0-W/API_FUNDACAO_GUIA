@@ -16,7 +16,7 @@ export class LoginBusiness {
     try {
       return await argon2.verify(hash, senha);
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -67,7 +67,7 @@ export class LoginBusiness {
 
       return;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 }

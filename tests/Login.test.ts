@@ -40,4 +40,16 @@ describe("Testando 'login'", () => {
       expect(response.status).toBe(404);
     }
   });
+
+  test("Testando admin com senha errad, deve retornar 401", async () => {
+    try {
+      await axios.post(URL, {
+        email: "fluiz@gmail.com",
+        senha: "123@123",
+      });
+    } catch (err) {
+      const response = err as AxiosError;
+      expect(response.status).toBe(404);
+    }
+  });
 });
