@@ -71,4 +71,22 @@ describe("Testando 'buscarLocalizacaoPorParametros'", () => {
       expect(responseErr.status).toBe(404);
     }
   });
+
+  test("Teste passando parametro exame, tal exame existe mas setor relacionado com ele não, deve retornar 500", async () => {
+    try {
+      await axios.get(URL + "?exame=Glicemia em Jejum");
+    } catch (err) {
+      const responseErr = err as AxiosError;
+      expect(responseErr.status).toBe(500);
+    }
+  });
+
+  test("Teste passando parametro exame correto, deve retornar 200", async () => {
+    try {
+      await axios.get(URL + "?exame=Hemograma Completo");
+    } catch (err) {
+      const responseErr = err as AxiosError;
+      expect(responseErr.status).toBe(200);
+    }
+  });
 });
