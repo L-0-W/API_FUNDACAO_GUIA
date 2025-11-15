@@ -53,4 +53,22 @@ describe("Testando 'buscarLocalizacaoPorParametros'", () => {
       expect(responseErr.status).toBe(404);
     }
   });
+
+  test("Teste passando parametro setor, tal exame não deve existir, e deve retornar 404", async () => {
+    try {
+      await axios.get(URL + "?setor=bugabuga");
+    } catch (err) {
+      const responseErr = err as AxiosError;
+      expect(responseErr.status).toBe(404);
+    }
+  });
+
+  test("Teste passando parametro bloco, tal exame não deve existir, e deve retornar 404", async () => {
+    try {
+      await axios.get(URL + "?bloco=bugabuga");
+    } catch (err) {
+      const responseErr = err as AxiosError;
+      expect(responseErr.status).toBe(404);
+    }
+  });
 });
