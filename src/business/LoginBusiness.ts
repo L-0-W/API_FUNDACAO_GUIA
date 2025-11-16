@@ -34,7 +34,6 @@ export class LoginBusiness {
         );
 
         responseBuilder.adicionarMensagem(`A senha ou email esta incorreto...`);
-
         throw new Error(catchErros.CLIENTE);
       }
 
