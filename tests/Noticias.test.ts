@@ -35,7 +35,7 @@ describe("Testando EndPoint 'buscarNoticias' (Busca e Filtros)", () => {
     expect(response.data.data.noticias).toBeInstanceOf(Array);
   });
 
-  test("Deve retornar 200, com filtros válidos", async () => {
+  test("Deve retornar 200, com filtros válidos e resultados encontrados", async () => {
     const validQuery = "?recentes=7&setor=financas&tags=imposto,renda";
     const response = await axios.get(`${URL}${validQuery}`);
     expect(response.status).toBe(200);
@@ -47,5 +47,13 @@ describe("Testando EndPoint 'buscarNoticias' (Busca e Filtros)", () => {
     const response = await axios.get(`${URL}${validQuery}`);
     expect(response.status).toBe(200);
     expect(response.data.data.noticias).toBeInstanceOf(Array);
+  });
+
+  test("Deve retornar 204 (No Content), com filtros válidos, mas sem resultados", async () => {
+    const missingQuery = "?setor=Inexistente&recentes=1";
+
+    const response = await axios.get(`${URL}${missingQuery}`);
+
+    expect(response.status).toBe(204);
   });
 });
