@@ -51,7 +51,7 @@ export class NoticiaisBusiness {
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
       responseBuilder.adicionarBody(novaNoticia);
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 }

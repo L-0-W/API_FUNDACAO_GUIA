@@ -15,9 +15,9 @@ export class NoticiaisController {
 
       const recentes = Number(req.query.recentes);
 
-      if (recentes && !Number.isInteger(recentes)) {
+      if ((recentes && !Number.isInteger(recentes)) || isNaN(recentes)) {
         responseBuilder.adicionarCodigoStatus(
-          responseBuilder.STATUS_CODE_ERRO_SEMANTICO,
+          responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
 
         responseBuilder.adicionarMensagem(
@@ -27,7 +27,10 @@ export class NoticiaisController {
         throw new Error(catchErros.CLIENTE);
       }
 
-      if (tags && tags.toString().split(",").length === 0) {
+      if (
+        (tags && tags.toString().replaceAll(",", "").length === 0) ||
+        tags?.length === 0
+      ) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );
