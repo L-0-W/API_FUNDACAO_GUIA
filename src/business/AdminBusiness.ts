@@ -77,7 +77,7 @@ export class AdminBusiness {
   };
 
   deletarEventosPorId = async (
-    id: number,
+    id: string,
     token: string,
     responseBuilder: ResponseBuilder<adminAPIretorno<exame>>,
   ) => {
@@ -188,7 +188,7 @@ export class AdminBusiness {
   };
 
   deletarNoticiaPorId = async (
-    id: number,
+    id: string,
     token: string,
     responseBuilder: ResponseBuilder<adminAPIretorno<exame>>,
   ) => {
