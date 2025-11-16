@@ -20,10 +20,10 @@ export class AdminController {
     const responseBuilder = new ResponseBuilder<adminAPIretorno<exame>>();
 
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id;
       const jwt_auth = req.headers.authorization;
 
-      if (isNaN(id) || !Number.isInteger(id)) {
+      if (!id || id.length === 0 || id.trim().length === 0) {
         responseBuilder.adicionarCodigoStatus(
           responseBuilder.STATUS_CODE_ERRO_USUARIO,
         );

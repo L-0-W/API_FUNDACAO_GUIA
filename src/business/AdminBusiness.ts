@@ -20,7 +20,7 @@ export class AdminBusiness {
   private adminData = new AdminData();
 
   deletarExamePorId = async (
-    id: number,
+    id: string,
     token: string,
     responseBuilder: ResponseBuilder<adminAPIretorno<exame>>,
   ) => {
