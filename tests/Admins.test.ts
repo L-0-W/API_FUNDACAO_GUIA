@@ -1,6 +1,11 @@
 import axios, { AxiosError } from "axios";
+import {
+  apiRetorno,
+  localizacaoAPIretorno,
+} from "../src/types/apiRetornoTipos";
 
 const URL = "http://localhost:3003/adminAcao/exame";
+const URLlogin = "http://localhost:3003/loginAdmin";
 
 const getStatus = (err: any) => err.response?.status;
 
@@ -23,5 +28,22 @@ describe("Testando EndPoint 'deletarExamePorId'", () => {
       const status = getStatus(err as AxiosError);
       expect(status).toBe(400);
     }
+  });
+
+  //TESTE E2E
+  test("Fazendo teste E2E em deletarExamePorId", async () => {
+    const responseLogin = await axios.post(`${URLlogin}`, {
+      email: "fluiz7880@gmail.com",
+      senha: "12345678",
+    });
+
+    expect(responseLogin.status).toBe(200);
+
+    const AUTH_TOKEN = (
+      responseLogin as apiRetorno<localizacaoAPIretorno>
+    ).mensagem?.split("Token Gerado: ")[0] as string;
+    const response = await axios.delete(`${URL}/1`, {
+      headers: { Authorization: AUTH_TOKEN },
+    });
   });
 });
