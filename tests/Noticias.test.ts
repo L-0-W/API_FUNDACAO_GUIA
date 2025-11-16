@@ -28,4 +28,15 @@ describe("Testando EndPoint 'buscarNoticias' (Busca e Filtros)", () => {
       }
     },
   );
+
+  test("Deve retornar 200, caso o database tenha notícias nos últimos 30 dias (Busca Padrão)", async () => {
+    try {
+      const response = await axios.get(URL);
+      expect(response.status).toBe(200);
+      expect(response.data.data.noticias).toBeInstanceOf(Array);
+    } catch (err) {
+      const resErr = err as AxiosError;
+      expect(resErr.status).toBe(400);
+    }
+  });
 });
