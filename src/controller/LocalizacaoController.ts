@@ -31,47 +31,11 @@ export class LocalizacaoController {
         throw new Error(catchErros.CLIENTE);
       }
 
-      if (exame?.toString().replaceAll("'", "").length === 0) {
-        responseBuilder.adicionarCodigoStatus(
-          responseBuilder.STATUS_CODE_ERRO_USUARIO,
-        );
-
-        responseBuilder.adicionarMensagem(
-          "Parametro 'exame' precisa ter conteudo, não pode ter apenas characteres especiais",
-        );
-
-        throw new Error(catchErros.CLIENTE);
-      }
-
-      if (setor?.toString().replaceAll("'", "").length === 0) {
-        responseBuilder.adicionarCodigoStatus(
-          responseBuilder.STATUS_CODE_ERRO_USUARIO,
-        );
-
-        responseBuilder.adicionarMensagem(
-          "Parametro 'setor' precisa ter conteudo, não pode ter apenas characteres especiais",
-        );
-
-        throw new Error(catchErros.CLIENTE);
-      }
-
-      if (bloco?.toString().replaceAll("'", "").length === 0) {
-        responseBuilder.adicionarCodigoStatus(
-          responseBuilder.STATUS_CODE_ERRO_USUARIO,
-        );
-
-        responseBuilder.adicionarMensagem(
-          "Parametro 'bloco' precisa ter conteudo, não pode ter apenas characteres especiais",
-        );
-
-        throw new Error(catchErros.CLIENTE);
-      }
-
       await this.localizacaoBusiness.obterLocalizacaoPorParametros(
         responseBuilder,
-        exame?.toString().replaceAll("'", ""),
-        setor?.toString().replaceAll("'", ""),
-        bloco?.toString().replaceAll("'", ""),
+        exame?.toString(),
+        setor?.toString(),
+        bloco?.toString(),
       );
 
       responseBuilder.construir(res);

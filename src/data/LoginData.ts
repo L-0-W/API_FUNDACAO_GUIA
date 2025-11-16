@@ -2,13 +2,15 @@ import { connection } from "../dbConnection";
 import { admin } from "../types/entidades";
 
 export class LoginData {
-  procurarAdminPorNome = (email: string): Promise<admin[]> => {
+  procurarAdminPorNome = async (email: string): Promise<admin[]> => {
     try {
-      const admin_user = connection
-        .select("id", "nome", "email", "senha")
-        .from("admins")
+      console.log(email);
+
+      const admin_user = await connection("admins")
+        .select("*")
         .where("email", email);
 
+      console.log(admin_user);
       return admin_user;
     } catch (err: any) {
       throw new Error(err);

@@ -16,7 +16,7 @@ export class LoginBusiness {
     try {
       return await argon2.verify(hash, senha);
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -30,11 +30,10 @@ export class LoginBusiness {
 
       if (!admin_retorno || admin_retorno[0] == undefined) {
         responseBuilder.adicionarCodigoStatus(
-          responseBuilder.STATUS_CODE_NAO_AUTORIZADO,
+          responseBuilder.STATUS_CODE_VAZIO,
         );
 
         responseBuilder.adicionarMensagem(`A senha ou email esta incorreto...`);
-
         throw new Error(catchErros.CLIENTE);
       }
 
@@ -67,7 +66,7 @@ export class LoginBusiness {
 
       return;
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 }
