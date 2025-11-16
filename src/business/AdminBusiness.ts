@@ -72,7 +72,7 @@ export class AdminBusiness {
       responseBuilder.adicionarMensagem("Exame deletado com sucesso");
       responseBuilder.adicionarBody({ sucesso: true, total: 1 });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -128,7 +128,7 @@ export class AdminBusiness {
       responseBuilder.adicionarMensagem("Evento deletado com sucesso");
       responseBuilder.adicionarBody({ sucesso: true, total: 1 });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -183,7 +183,7 @@ export class AdminBusiness {
       responseBuilder.adicionarMensagem("Vaga deletado com sucesso");
       responseBuilder.adicionarBody({ sucesso: true, total: 1 });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -239,7 +239,7 @@ export class AdminBusiness {
       responseBuilder.adicionarMensagem("Noticia deletado com sucesso");
       responseBuilder.adicionarBody({ sucesso: true, total: 1 });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -331,7 +331,7 @@ export class AdminBusiness {
         data: examesCriados,
       });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -422,7 +422,7 @@ export class AdminBusiness {
         data: noticiasCriadas,
       });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -510,7 +510,7 @@ export class AdminBusiness {
         data: eventosCriados,
       });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -602,7 +602,7 @@ export class AdminBusiness {
         data: vagaCriada,
       });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -695,7 +695,7 @@ export class AdminBusiness {
         data: examePatch,
       });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -804,7 +804,7 @@ export class AdminBusiness {
         data: noticiaPatch,
       });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -910,7 +910,7 @@ export class AdminBusiness {
         data: vagaPatch,
       });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 
@@ -1011,7 +1011,7 @@ export class AdminBusiness {
         data: eventoPatch,
       });
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 }
