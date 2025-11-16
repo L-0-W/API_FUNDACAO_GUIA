@@ -33,36 +33,45 @@ export class EventosData {
     try {
       const dataAtual = Date.now();
 
-      const evento = await connection
+      const eventos = await connection
         .select("*")
         .from("eventos")
         .where((builder) => {
-          filtros.forEach((e) => {
-            typeof e === "number"
-              ? builder
-                  .andWhere("data_inicio", "<=", e)
-                  .andWhere("data_fim", ">=", dataAtual)
-              : undefined;
-            typeof e === "string"
-              ? builder.andWhere("status", "LIKE", e)
-              : undefined;
-            typeof e === "object"
-              ? builder.andWhere((builder2) => {
-                  const tag = e as string[];
+          filtros.forEach((filtroElemento) => {
+            if (typeof filtroElemento === "number") {
+              const dataLimite = filtroElemento;
 
-                  tag.forEach((el) => {
-                    console.log(el);
-                    builder2
-                      .orWhereLike("titulo", `%${el}%`)
-                      .orWhereLike("descricao", `%${el}%`)
-                      .orWhereLike("publico_alvo", `%${el}%`);
-                  });
-                })
-              : undefined;
+              builder
+                .andWhere("data_inicio", "<=", dataLimite)
+                .andWhere("data_fim", ">=", dataAtual);
+              return;
+            }
+
+            if (typeof filtroElemento === "string") {
+              const status = filtroElemento;
+
+              builder.andWhere("status", "LIKE", status);
+              return;
+            }
+
+            if (typeof filtroElemento === "object") {
+              const termosBusca = filtroElemento as string[];
+
+              builder.andWhere((builder2) => {
+                termosBusca.forEach((termo) => {
+                  console.log(termo);
+
+                  builder2
+                    .orWhereLike("titulo", `%${termo}%`)
+                    .orWhereLike("descricao", `%${termo}%`)
+                    .orWhereLike("publico_alvo", `%${termo}%`);
+                });
+              });
+              return;
+            }
           });
         });
-
-      return evento;
+      return eventos;
     } catch (err: any) {
       throw new Error(err);
     }
