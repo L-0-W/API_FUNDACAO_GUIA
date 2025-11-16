@@ -29,7 +29,9 @@ export class NoticiaisBusiness {
 
           throw new Error(catchErros.CLIENTE);
         } else {
-          responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
+          responseBuilder.adicionarCodigoStatus(
+            responseBuilder.STATUS_CODE_SEM_CONTEUDO,
+          );
         }
 
         const noticiaRetorno: noticiaAPIretorno = {
@@ -42,7 +44,18 @@ export class NoticiaisBusiness {
 
       const retorno = await this.noticiasData.buscarNoticiaFiltrado(params);
 
-      console.log(retorno);
+      if (!retorno || retorno.length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SEM_CONTEUDO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Não foi encontrado nemhuma noticias com os filtros!",
+        );
+
+        return;
+      }
+
       const novaNoticia: noticiaAPIretorno = {
         noticias: retorno,
       };
@@ -51,7 +64,7 @@ export class NoticiaisBusiness {
       responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
       responseBuilder.adicionarBody(novaNoticia);
     } catch (err: any) {
-      throw new Error(err);
+      throw new Error(err.message);
     }
   };
 }
