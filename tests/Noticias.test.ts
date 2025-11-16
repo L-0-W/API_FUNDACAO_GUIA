@@ -30,13 +30,22 @@ describe("Testando EndPoint 'buscarNoticias' (Busca e Filtros)", () => {
   );
 
   test("Deve retornar 200, caso o database tenha notícias nos últimos 30 dias (Busca Padrão)", async () => {
-    try {
-      const response = await axios.get(URL);
-      expect(response.status).toBe(200);
-      expect(response.data.data.noticias).toBeInstanceOf(Array);
-    } catch (err) {
-      const resErr = err as AxiosError;
-      expect(resErr.status).toBe(400);
-    }
+    const response = await axios.get(URL);
+    expect(response.status).toBe(200);
+    expect(response.data.data.noticias).toBeInstanceOf(Array);
+  });
+
+  test("Deve retornar 200, com filtros válidos", async () => {
+    const validQuery = "?recentes=7&setor=financas&tags=imposto,renda";
+    const response = await axios.get(`${URL}${validQuery}`);
+    expect(response.status).toBe(200);
+  });
+
+  test("Deve retornar 200, com filtros válidos e resultados encontrados", async () => {
+    const validQuery = "?recentes=7&setor=financas&tags=imposto,renda";
+
+    const response = await axios.get(`${URL}${validQuery}`);
+    expect(response.status).toBe(200);
+    expect(response.data.data.noticias).toBeInstanceOf(Array);
   });
 });
