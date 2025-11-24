@@ -1,0 +1,70 @@
+import { ResponseBuilder } from "../ResponseBuilder";
+import { NoticiaisData } from "../data/NoticiasData";
+import { LIMIT_WORKER_THREADS } from "sqlite3";
+
+import { catchErros, noticia_DTO, params_noticia } from "../types/entidades";
+import { noticiaAPIretorno } from "../types/apiRetornoTipos";
+
+export class NoticiaisBusiness {
+  private noticiasData = new NoticiaisData();
+
+  verificarBuscaNoticias = async (
+    params: params_noticia,
+    responseBuilder: ResponseBuilder<noticiaAPIretorno>,
+  ) => {
+    try {
+      if (Object.keys(params).length == 0) {
+        console.log("Fazendo busca padrão..");
+
+        const retorno: noticia_DTO[] =
+          await this.noticiasData.buscarNoticiaDefault();
+
+        if (retorno.length == 0) {
+          responseBuilder.adicionarCodigoStatus(
+            responseBuilder.STATUS_CODE_VAZIO,
+          );
+          responseBuilder.adicionarMensagem(
+            "Não foi encontrado nemhuma noticia desde os ultimos 30 dias..",
+          );
+
+          throw new Error(catchErros.CLIENTE);
+        } else {
+          responseBuilder.adicionarCodigoStatus(
+            responseBuilder.STATUS_CODE_SEM_CONTEUDO,
+          );
+        }
+
+        const noticiaRetorno: noticiaAPIretorno = {
+          noticias: retorno,
+        };
+
+        responseBuilder.adicionarBody(noticiaRetorno);
+        return;
+      }
+
+      const retorno = await this.noticiasData.buscarNoticiaFiltrado(params);
+
+      if (!retorno || retorno.length === 0) {
+        responseBuilder.adicionarCodigoStatus(
+          responseBuilder.STATUS_CODE_SEM_CONTEUDO,
+        );
+
+        responseBuilder.adicionarMensagem(
+          "Não foi encontrado nemhuma noticias com os filtros!",
+        );
+
+        return;
+      }
+
+      const novaNoticia: noticiaAPIretorno = {
+        noticias: retorno,
+      };
+
+      console.log(params);
+      responseBuilder.adicionarCodigoStatus(responseBuilder.STATUS_CODE_OK);
+      responseBuilder.adicionarBody(novaNoticia);
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
+  };
+}
