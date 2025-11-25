@@ -176,11 +176,16 @@ export class AdminData {
     }
   };
 
-  criarExame = async (valores: string[]): Promise<exame[]> => {
+  criarExame = async (valores: string[], id: string): Promise<exame[]> => {
     try {
       const examesCriados = await connection
         .insert(
-          { nome: valores[0], descricao: valores[1], local_id: valores[3] },
+          {
+            id,
+            nome: valores[0],
+            descricao: valores[1],
+            local_id: valores[2],
+          },
           ["*"],
         )
         .into("exames");

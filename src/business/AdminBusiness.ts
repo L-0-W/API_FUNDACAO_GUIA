@@ -326,7 +326,8 @@ export class AdminBusiness {
         throw new Error(catchErros.CLIENTE);
       }
 
-      const examesCriados = await this.adminData.criarExame(exame_values);
+      const uuid = gerarUUID7v();
+      const examesCriados = await this.adminData.criarExame(exame_values, uuid);
 
       responseBuilder.adicionarCodigoStatus(
         responseBuilder.STATUS_CODE_OK_CRIADO,
